@@ -1,0 +1,43 @@
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f2f5;
+  background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
+  background-repeat: no-repeat;
+  background-position: center 110px;
+  background-size: 100%;
+}
+
+.login-card {
+  width: 368px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  border-radius: 4px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-header h2 {
+  margin-bottom: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+}
+
+.login-logo {
+  height: 44px;
+  margin-right: 16px;
+  vertical-align: top;
+}
+
+.login-title {
+  position: relative;
+  top: 2px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+  font-size: 33px;
+} 
