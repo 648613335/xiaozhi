@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     // 模拟登录请求
     try {
-      // 这里是模拟登录，实际项目中应该调用API
+      // 这里是模拟登录，实际项目中应该调用API1
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // 简单验证: 用户名是admin且密码是123456
