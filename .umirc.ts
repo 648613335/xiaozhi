@@ -12,19 +12,30 @@ export default defineConfig({
       redirect: '/login',
     },
     {
-      path: '/home',
-      name: '首页',
-      component: './Home',
-    },
-    {
-      path: '/users',
-      name: '用户管理',
-      component: './Users',
-    },
-    {
-      path: '/roles',
-      name: '角色管理',
-      component: './Roles',
+      path: '/',
+      component: '@/layouts/index',
+      routes: [
+        {
+          path: '/home',
+          name: '首页',
+          component: './Home',
+        },
+        {
+          path: '/users',
+          name: '用户管理',
+          component: './Users',
+        },
+        {
+          path: '/roles',
+          name: '角色管理',
+          component: './Roles',
+        },
+        {
+          path: '/statistics',
+          name: '统计分析',
+          component: './Statistics',
+        },
+      ],
     },
   ],
   npmClient: 'pnpm',
