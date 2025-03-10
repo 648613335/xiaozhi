@@ -35,6 +35,16 @@ export default defineConfig({
           name: '统计分析',
           component: './Statistics',
         },
+        {
+          path: '/chat-history',
+          name: '聊天记录',
+          component: './ChatHistory',
+        },
+        {
+          path: '/knowledge-base',
+          name: '知识库',
+          component: './KnowledgeBase',
+        },
       ],
     },
   ],

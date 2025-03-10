@@ -1,0 +1,59 @@
+.knowledge-base-page {
+  background-color: #f0f2f5;
+  min-height: 100%;
+  padding: 20px;
+}
+
+.kb-header {
+  margin-bottom: 20px;
+}
+
+.kb-header h2 {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.kb-header h2 .anticon {
+  margin-right: 8px;
+}
+
+.filter-container {
+  margin-bottom: 20px;
+}
+
+.kb-card {
+  margin-bottom: 24px;
+}
+
+.kb-card .ant-card-head {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.answer-preview {
+  max-width: 450px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .answer-preview {
+    max-width: 150px;
+  }
+
+  .filter-container {
+    margin-top: 12px;
+  }
+
+  .kb-header {
+    margin-bottom: 16px;
+  }
+}

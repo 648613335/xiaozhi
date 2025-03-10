@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  Card, 
-  Row, 
-  Col, 
-  Statistic, 
-  Typography, 
-  Table, 
-  DatePicker, 
-  Select, 
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Typography,
+  Table,
+  DatePicker,
+  Select,
   Tabs,
   Tag,
   Space,
@@ -15,10 +15,10 @@ import {
   List,
   Divider
 } from 'antd';
-import { 
-  UserOutlined, 
-  TeamOutlined, 
-  MessageOutlined, 
+import {
+  UserOutlined,
+  TeamOutlined,
+  MessageOutlined,
   RiseOutlined,
   FieldTimeOutlined,
   StarOutlined
@@ -162,7 +162,7 @@ const StatisticsPage: React.FC = () => {
       title: '时间',
       dataIndex: 'timeStamp',
       key: 'timeStamp',
-      sorter: (a: ConversationRecord, b: ConversationRecord) => 
+      sorter: (a: ConversationRecord, b: ConversationRecord) =>
         new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime(),
     },
     {
@@ -175,7 +175,7 @@ const StatisticsPage: React.FC = () => {
         else if (score >= 3) color = 'blue';
         else if (score >= 2) color = 'orange';
         else color = 'red';
-        
+
         return (
           <Tag color={color}>
             {score} 星
@@ -191,8 +191,8 @@ const StatisticsPage: React.FC = () => {
         <Title level={2}>统计分析</Title>
         <Space>
           <RangePicker picker="month" />
-          <Select 
-            placeholder="选择角色" 
+          <Select
+            placeholder="选择角色"
             style={{ width: 180 }}
             allowClear
           >
@@ -216,7 +216,7 @@ const StatisticsPage: React.FC = () => {
               valueStyle={{ color: '#1890ff' }}
             />
             <div className="stat-trend">
-              <RiseOutlined style={{ color: '#52c41a' }} /> 
+              <RiseOutlined style={{ color: '#52c41a' }} />
               <span className="trend-value">20.5%</span>
               <span className="trend-period">较上月</span>
             </div>
@@ -231,7 +231,7 @@ const StatisticsPage: React.FC = () => {
               valueStyle={{ color: '#52c41a' }}
             />
             <div className="stat-trend">
-              <RiseOutlined style={{ color: '#52c41a' }} /> 
+              <RiseOutlined style={{ color: '#52c41a' }} />
               <span className="trend-value">12.3%</span>
               <span className="trend-period">较上月</span>
             </div>
@@ -246,7 +246,7 @@ const StatisticsPage: React.FC = () => {
               valueStyle={{ color: '#722ed1' }}
             />
             <div className="stat-trend">
-              <RiseOutlined style={{ color: '#52c41a' }} /> 
+              <RiseOutlined style={{ color: '#52c41a' }} />
               <span className="trend-value">15.8%</span>
               <span className="trend-period">较上月</span>
             </div>
@@ -261,7 +261,7 @@ const StatisticsPage: React.FC = () => {
               valueStyle={{ color: '#fa8c16' }}
             />
             <div className="stat-trend">
-              <RiseOutlined style={{ color: '#52c41a' }} /> 
+              <RiseOutlined style={{ color: '#52c41a' }} />
               <span className="trend-value">5.2%</span>
               <span className="trend-period">较上月</span>
             </div>
@@ -276,7 +276,7 @@ const StatisticsPage: React.FC = () => {
               <Card title="用户活跃度趋势" className="chart-card">
                 <div className="activity-chart">
                   <h3>近6个月用户活跃度数据</h3>
-                  <Table 
+                  <Table
                     dataSource={userActivityData}
                     rowKey="date"
                     pagination={false}
@@ -320,9 +320,9 @@ const StatisticsPage: React.FC = () => {
                           <span>{item.type}</span>
                           <span>{item.value}%</span>
                         </div>
-                        <Progress 
-                          percent={item.value} 
-                          showInfo={false} 
+                        <Progress
+                          percent={item.value}
+                          showInfo={false}
                           strokeColor={item.color}
                         />
                       </div>
@@ -333,7 +333,7 @@ const StatisticsPage: React.FC = () => {
             </Col>
           </Row>
         </TabPane>
-        
+
         <TabPane tab="对话分析" key="2">
           <Row gutter={16}>
             <Col xs={24} md={12}>
@@ -347,9 +347,9 @@ const StatisticsPage: React.FC = () => {
                           <span>{item.topic}</span>
                           <span>{item.count}</span>
                         </div>
-                        <Progress 
-                          percent={(item.count / 3500) * 100} 
-                          showInfo={false} 
+                        <Progress
+                          percent={(item.count / 3500) * 100}
+                          showInfo={false}
                           strokeColor={item.color}
                         />
                       </div>
@@ -367,8 +367,8 @@ const StatisticsPage: React.FC = () => {
                         <span className="feedback-title">{item.category}</span>
                         <span className="feedback-count">{item.count} ({item.percentage}%)</span>
                       </div>
-                      <Progress 
-                        percent={item.percentage} 
+                      <Progress
+                        percent={item.percentage}
                         showInfo={false}
                         strokeColor={item.color}
                       />
@@ -379,11 +379,11 @@ const StatisticsPage: React.FC = () => {
             </Col>
           </Row>
         </TabPane>
-        
+
         <TabPane tab="详细数据" key="3">
           <Card title="近期对话记录" className="data-card">
-            <Table 
-              columns={conversationColumns} 
+            <Table
+              columns={conversationColumns}
               dataSource={recentConversationsData}
               rowKey="id"
               pagination={{ pageSize: 10 }}

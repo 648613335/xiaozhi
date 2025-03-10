@@ -9,7 +9,9 @@ import {
   TeamOutlined,
   DownOutlined,
   LogoutOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  MessageOutlined,
+  BookOutlined
 } from '@ant-design/icons';
 import './index.less';
 import '@/assets/global.css';
@@ -81,6 +83,16 @@ const BasicLayout: React.FC = () => {
       key: '/statistics',
       icon: <BarChartOutlined />,
       label: <Link to="/statistics">统计分析</Link>,
+    },
+    {
+      key: '/chat-history',
+      icon: <MessageOutlined />,
+      label: <Link to="/chat-history">聊天记录</Link>,
+    },
+    {
+      key: '/knowledge-base',
+      icon: <BookOutlined />,
+      label: <Link to="/knowledge-base">知识库</Link>,
     },
   ];
 
