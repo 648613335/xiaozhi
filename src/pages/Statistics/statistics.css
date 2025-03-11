@@ -1,0 +1,100 @@
+.statistics-page {
+  background-color: #f0f2f5;
+  min-height: 100%;
+  padding: 20px;
+}
+
+.statistics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.statistics-header h2 {
+  margin-bottom: 0;
+}
+
+.stat-card-row {
+  margin-bottom: 24px;
+}
+
+.stat-trend {
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.trend-value {
+  margin-left: 4px;
+  font-weight: 500;
+  color: #52c41a;
+}
+
+.trend-period {
+  margin-left: 8px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.chart-card {
+  height: 380px;
+  margin-bottom: 24px;
+  overflow: auto;
+}
+
+.chart-card .ant-card-body {
+  padding: 16px;
+  height: calc(100% - 57px);
+}
+
+.stat-tabs .ant-tabs-content {
+  padding-top: 16px;
+}
+
+.data-card {
+  margin-bottom: 24px;
+}
+
+.activity-chart h3 {
+  text-align: center;
+  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.feedback-list {
+  padding: 8px 0;
+}
+
+.feedback-item {
+  margin-bottom: 16px;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.feedback-title {
+  font-weight: 500;
+}
+
+.feedback-count {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+@media (max-width: 768px) {
+  .statistics-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .statistics-header > div {
+    margin-top: 16px;
+  }
+
+  .chart-card {
+    height: auto;
+    max-height: 400px;
+  }
+}
