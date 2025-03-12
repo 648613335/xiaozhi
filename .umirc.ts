@@ -46,6 +46,24 @@ export default defineConfig({
       name: '反馈管理',
       component: './Feedback',
     },
+    {
+      path: '/profile',
+      name: '个人资料',
+      component: './Profile',
+    },
+    {
+      path: '/modelMonitor',
+      name: '模型监控',
+      component: './ModelMonitor',
+    },
+    {
+      path: '/404',
+      component: './404',
+    },
+    {
+      path: '*',
+      redirect: '/404',
+    },
   ],
   npmClient: 'pnpm',
   styles: [

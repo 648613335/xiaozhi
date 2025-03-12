@@ -7,7 +7,7 @@ const { Title } = Typography;
 const UsersPage: React.FC = () => {
   return (
     <div className="content-container">
-      <Title level={2}>用户管理1</Title>
+      <Title level={2}>用户管理</Title>
     </div>
   );
 };

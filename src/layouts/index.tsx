@@ -11,7 +11,7 @@ import {
 import './index.less';
 import '@/assets/global.css';
 import { isUserLoggedIn, getCurrentUser, logout } from '@/utils/auth';
-import menus from "@/component/menu";
+import menus from "@/components/menu";
 
 const { Header, Sider, Content } = Layout;
 
@@ -47,10 +47,14 @@ const BasicLayout: React.FC = () => {
     logout(); // 调用 logout 函数执行退出操作
   };
 
+  const handprofile=()=>{
+    history.push('/profile')
+  }
+
   // 定义用户菜单，包含个人资料和退出登录选项
   const userMenu = (
     <Menu>
-      <Menu.Item key="profile" icon={<UserOutlined />}>
+      <Menu.Item key="profile" icon={<UserOutlined />} onClick={handprofile}>
         个人资料
       </Menu.Item>
       <Menu.Divider />

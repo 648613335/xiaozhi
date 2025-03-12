@@ -66,6 +66,12 @@ const menus = () => {
             component: './Feedback',
             icon: <ShareAltOutlined />,
         },
+        {
+            path: '/modelMonitor',
+            name: '模型监控',
+            component: './ModelMonitor',
+            icon: <ShareAltOutlined />,
+        },
     ]
 }
 export default menus
