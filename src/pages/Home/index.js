@@ -1,11 +1,16 @@
 import React from 'react';
 import { Card, Typography, Space, Statistic } from 'antd';
 import { UserOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons';
-import '@/assets/global.css';
+import CountUp from 'react-countup';
 
 const { Title, Paragraph } = Typography;
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
+  // 添加防御性代码，确保所有对象和属性都已定义
+  const userCount = 112893;
+  const roleCount = 8;
+  const moduleCount = 12;
+
   return (
     <div className="content-container">
       <Typography>
@@ -19,22 +24,25 @@ const HomePage: React.FC = () => {
         <Card>
           <Statistic
             title="用户总数"
-            value={112893}
+            value={userCount}
             prefix={<UserOutlined />}
+            formatter={value => <CountUp end={value} duration={2.5} />}
           />
         </Card>
         <Card>
           <Statistic
             title="角色数量"
-            value={8}
+            value={roleCount}
             prefix={<TeamOutlined />}
+            formatter={value => <CountUp end={value} duration={2.5} />}
           />
         </Card>
         <Card>
           <Statistic
             title="系统模块"
-            value={12}
+            value={moduleCount}
             prefix={<SettingOutlined />}
+            formatter={value => <CountUp end={value} duration={2.5} />}
           />
         </Card>
       </Space>

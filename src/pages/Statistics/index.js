@@ -112,20 +112,9 @@ const userFeedbackData = [
   { category: '非常不满意', count: 280, percentage: 2.8, color: '#cf1322' },
 ];
 
-interface ConversationRecord {
-  id: number;
-  userName: string;
-  roleName: string;
-  topic: string;
-  messageCount: number;
-  duration: string;
-  timeStamp: string;
-  satisfaction: number;
-}
-
-const StatisticsPage: React.FC = () => {
-  const [timeRange, setTimeRange] = useState<[string, string]>(['2024-01', '2024-06']);
-  const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
+const StatisticsPage = () => {
+  const [timeRange, setTimeRange] = useState(['2024-01', '2024-06']);
+  const [roleFilter, setRoleFilter] = useState(undefined);
 
   // 近期对话记录表格列
   const conversationColumns = [
@@ -143,7 +132,7 @@ const StatisticsPage: React.FC = () => {
       title: '主题',
       dataIndex: 'topic',
       key: 'topic',
-      render: (text: string) => (
+      render: (text) => (
         <Tag color="blue">{text}</Tag>
       ),
     },
@@ -151,7 +140,7 @@ const StatisticsPage: React.FC = () => {
       title: '消息数',
       dataIndex: 'messageCount',
       key: 'messageCount',
-      sorter: (a: ConversationRecord, b: ConversationRecord) => a.messageCount - b.messageCount,
+      sorter: (a, b) => a.messageCount - b.messageCount,
     },
     {
       title: '时长',
@@ -162,14 +151,14 @@ const StatisticsPage: React.FC = () => {
       title: '时间',
       dataIndex: 'timeStamp',
       key: 'timeStamp',
-      sorter: (a: ConversationRecord, b: ConversationRecord) =>
+      sorter: (a, b) =>
         new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime(),
     },
     {
       title: '满意度',
       dataIndex: 'satisfaction',
       key: 'satisfaction',
-      render: (score: number) => {
+      render: (score) => {
         let color = '';
         if (score >= 4) color = 'green';
         else if (score >= 3) color = 'blue';
@@ -255,142 +244,51 @@ const StatisticsPage: React.FC = () => {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="平均对话时长"
-              value="7.2分钟"
+              title="平均响应时间"
+              value="2.5秒"
               prefix={<FieldTimeOutlined />}
-              valueStyle={{ color: '#fa8c16' }}
+              valueStyle={{ color: '#faad14' }}
             />
             <div className="stat-trend">
               <RiseOutlined style={{ color: '#52c41a' }} />
-              <span className="trend-value">5.2%</span>
+              <span className="trend-value">8.2%</span>
               <span className="trend-period">较上月</span>
             </div>
           </Card>
         </Col>
       </Row>
 
-      <Tabs defaultActiveKey="1" className="stat-tabs">
-        <TabPane tab="用户分析" key="1">
-          <Row gutter={16}>
-            <Col xs={24} md={16}>
-              <Card title="用户活跃度趋势" className="chart-card">
-                <div className="activity-chart">
-                  <h3>近6个月用户活跃度数据</h3>
-                  <Table
-                    dataSource={userActivityData}
-                    rowKey="date"
-                    pagination={false}
-                    columns={[
-                      {
-                        title: '月份',
-                        dataIndex: 'date',
-                        key: 'date',
-                      },
-                      {
-                        title: '活跃用户',
-                        dataIndex: 'activeUsers',
-                        key: 'activeUsers',
-                        render: (val) => <span style={{ color: '#1890ff' }}>{val}</span>,
-                      },
-                      {
-                        title: '新增用户',
-                        dataIndex: 'newUsers',
-                        key: 'newUsers',
-                        render: (val) => <span style={{ color: '#52c41a' }}>{val}</span>,
-                      },
-                      {
-                        title: '会话数',
-                        dataIndex: 'sessions',
-                        key: 'sessions',
-                        render: (val) => <span style={{ color: '#722ed1' }}>{val}</span>,
-                      }
-                    ]}
-                  />
+      {/* 用户反馈分析 */}
+      <Card title="用户反馈分析" className="feedback-analysis">
+        <List
+          dataSource={userFeedbackData}
+          renderItem={item => (
+            <List.Item>
+              <div style={{ width: '100%' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span>{item.category}</span>
+                  <span>{item.count} 次</span>
                 </div>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card title="角色使用分布" className="chart-card">
-                <List
-                  dataSource={roleUsageData}
-                  renderItem={item => (
-                    <List.Item>
-                      <div style={{ width: '100%' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span>{item.type}</span>
-                          <span>{item.value}%</span>
-                        </div>
-                        <Progress
-                          percent={item.value}
-                          showInfo={false}
-                          strokeColor={item.color}
-                        />
-                      </div>
-                    </List.Item>
-                  )}
+                <Progress
+                  percent={item.percentage}
+                  strokeColor={item.color}
+                  showInfo={false}
                 />
-              </Card>
-            </Col>
-          </Row>
-        </TabPane>
+              </div>
+            </List.Item>
+          )}
+        />
+      </Card>
 
-        <TabPane tab="对话分析" key="2">
-          <Row gutter={16}>
-            <Col xs={24} md={12}>
-              <Card title="对话主题分析" className="chart-card">
-                <List
-                  dataSource={conversationTopicsData}
-                  renderItem={item => (
-                    <List.Item>
-                      <div style={{ width: '100%' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span>{item.topic}</span>
-                          <span>{item.count}</span>
-                        </div>
-                        <Progress
-                          percent={(item.count / 3500) * 100}
-                          showInfo={false}
-                          strokeColor={item.color}
-                        />
-                      </div>
-                    </List.Item>
-                  )}
-                />
-              </Card>
-            </Col>
-            <Col xs={24} md={12}>
-              <Card title="用户反馈分析" className="chart-card">
-                <div className="feedback-list">
-                  {userFeedbackData.map(item => (
-                    <div key={item.category} className="feedback-item">
-                      <div className="feedback-header">
-                        <span className="feedback-title">{item.category}</span>
-                        <span className="feedback-count">{item.count} ({item.percentage}%)</span>
-                      </div>
-                      <Progress
-                        percent={item.percentage}
-                        showInfo={false}
-                        strokeColor={item.color}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </Col>
-          </Row>
-        </TabPane>
-
-        <TabPane tab="详细数据" key="3">
-          <Card title="近期对话记录" className="data-card">
-            <Table
-              columns={conversationColumns}
-              dataSource={recentConversationsData}
-              rowKey="id"
-              pagination={{ pageSize: 10 }}
-            />
-          </Card>
-        </TabPane>
-      </Tabs>
+      {/* 近期对话记录 */}
+      <Card title="近期对话记录" className="recent-conversations">
+        <Table
+          columns={conversationColumns}
+          dataSource={recentConversationsData}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+        />
+      </Card>
     </div>
   );
 };

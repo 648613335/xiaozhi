@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Result } from 'antd';
 import { history } from 'umi';
 
-const NoFoundPage: React.FC = () => {
+const NoFoundPage = () => {
   return (
     <div style={{
       display: 'flex',
@@ -24,4 +24,4 @@ const NoFoundPage: React.FC = () => {
   );
 };
 
-export default NoFoundPage;
+export default NoFoundPage; 

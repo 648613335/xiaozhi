@@ -1,4 +1,9 @@
-import { defineConfig } from 'umi';
+import { defineConfig } from '@umijs/max';
+import path from 'path';
+import stream from 'stream-browserify';
+import crypto from 'crypto-browserify';
+import buffer from 'buffer';
+import util from 'util';
 
 export default defineConfig({
   routes: [
@@ -57,6 +62,11 @@ export default defineConfig({
       component: './ModelMonitor',
     },
     {
+      path: '/security',
+      name: '安全防护',
+      component: './Security'
+    },
+    {
       path: '/404',
       component: './404',
     },
@@ -65,8 +75,9 @@ export default defineConfig({
       redirect: '/404',
     },
   ],
-  npmClient: 'pnpm',
+  npmClient: 'npm',
   styles: [
     '@/assets/global.css',
   ],
+  mfsu: false,
 });

@@ -32,20 +32,9 @@ const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
-// 知识条目接口定义
-interface KnowledgeItem {
-  id: number;
-  question: string;
-  answer: string;
-  category: string;
-  tags: string[];
-  createdAt: string;
-  updatedAt: string;
-  status: 'active' | 'draft' | 'archived';
-}
 
 // 模拟知识库数据
-const mockKnowledgeData: KnowledgeItem[] = [
+const mockKnowledgeData = [
   {
     id: 1,
     question: '什么是人工智能？',
@@ -116,13 +105,13 @@ const statusOptions = [
   { value: 'archived', label: '已归档', color: 'gray' }
 ];
 
-const KnowledgeBasePage: React.FC = () => {
-  const [dataSource, setDataSource] = useState<KnowledgeItem[]>(mockKnowledgeData);
+const KnowledgeBasePage = () => {
+  const [dataSource, setDataSource] = useState(mockKnowledgeData);
   const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState < string > ('');
+  const [selectedStatus, setSelectedStatus] = useState < string > ('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [editingItem, setEditingItem] = useState<KnowledgeItem | null>(null);
+  const [editingItem, setEditingItem] = useState(null);
   const [form] = Form.useForm();
 
   // 处理添加新知识条目
@@ -133,7 +122,7 @@ const KnowledgeBasePage: React.FC = () => {
   };
 
   // 处理编辑知识条目
-  const handleEdit = (record: KnowledgeItem) => {
+  const handleEdit = (record) => {
     setEditingItem(record);
     form.setFieldsValue({
       ...record,
@@ -143,7 +132,7 @@ const KnowledgeBasePage: React.FC = () => {
   };
 
   // 处理删除知识条目
-  const handleDelete = (id: number) => {
+  const handleDelete = (id) => {
     setDataSource(dataSource.filter(item => item.id !== id));
     message.success('知识条目已删除');
   };
@@ -152,7 +141,7 @@ const KnowledgeBasePage: React.FC = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      const tags = values.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
+      const tags = values.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
 
       const currentDate = new Date().toISOString().replace('T', ' ').substring(0, 19);
 
@@ -171,7 +160,7 @@ const KnowledgeBasePage: React.FC = () => {
         message.success('知识条目已更新');
       } else {
         // 添加新条目
-        const newItem: KnowledgeItem = {
+        const newItem = {
           id: Math.max(...dataSource.map(item => item.id)) + 1,
           ...values,
           tags,
@@ -240,7 +229,7 @@ const KnowledgeBasePage: React.FC = () => {
       dataIndex: 'answer',
       key: 'answer',
       ellipsis: true,
-      render: (text: string) => (
+      render: (text) => (
         <Tooltip title={text} placement="topLeft">
           <div className="answer-preview">{text}</div>
         </Tooltip>
@@ -257,7 +246,7 @@ const KnowledgeBasePage: React.FC = () => {
       dataIndex: 'tags',
       key: 'tags',
       width: 220,
-      render: (tags: string[]) => (
+      render: (tags) => (
         <div className="tag-container">
           {tags.map(tag => (
             <Tag key={tag} color="blue">{tag}</Tag>
@@ -270,7 +259,7 @@ const KnowledgeBasePage: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: string) => {
+      render: (status) => {
         const statusInfo = statusOptions.find(opt => opt.value === status);
         return statusInfo ? <Tag color={statusInfo.color}>{statusInfo.label}</Tag> : status;
       }
@@ -285,7 +274,7 @@ const KnowledgeBasePage: React.FC = () => {
       title: '操作',
       key: 'action',
       width: 120,
-      render: (_: any, record: KnowledgeItem) => (
+      render: (_, record) => (
         <Space size="small">
           <Button
             type="text"

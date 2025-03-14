@@ -9,7 +9,9 @@ import {
     BarChartOutlined,
     MessageOutlined,
     BookOutlined,
-    ShareAltOutlined
+    ShareAltOutlined,
+    SafetyCertificateOutlined,
+    RocketOutlined
   } from '@ant-design/icons';
 
 // 定义一个名为 menus 的常量，它是一个函数，返回一个包含多个菜单项的数组
@@ -70,8 +72,13 @@ const menus = () => {
             path: '/modelMonitor',
             name: '模型监控',
             component: './ModelMonitor',
-            icon: <ShareAltOutlined />,
+            icon: <RocketOutlined />,
         },
+        {
+            name: '安全防护',
+            path: '/security',
+            icon:<SafetyCertificateOutlined />,
+          }
     ]
 }
 export default menus

@@ -33,30 +33,7 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 // 模拟聊天记录数据
-interface Message {
-  id: number;
-  content: string;
-  sender: 'user' | 'assistant';
-  timestamp: string;
-}
-
-interface ChatRecord {
-  id: number;
-  userId: string;
-  userName: string;
-  userAvatar?: string;
-  assistantId: number;
-  assistantName: string;
-  assistantAvatar?: string;
-  messages: Message[];
-  startTime: string;
-  endTime: string;
-  duration: string;
-  topic?: string;
-  messageCount: number;
-}
-
-const mockChatData: ChatRecord[] = [
+const mockChatData = [
   {
     id: 1001,
     userId: 'u12345',
@@ -211,17 +188,17 @@ const mockChatData: ChatRecord[] = [
   }
 ];
 
-const ChatHistoryPage: React.FC = () => {
+const ChatHistoryPage = () => {
   const [searchText, setSearchText] = useState('');
-  const [dateRange, setDateRange] = useState<any>(null);
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [dateRange, setDateRange] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [detailVisible, setDetailVisible] = useState(false);
-  const [currentChat, setCurrentChat] = useState<ChatRecord | null>(null);
+  const [currentChat, setCurrentChat] = useState(null);
 
   // 处理查看对话详情
-  const handleViewDetail = (record: ChatRecord) => {
+  const handleViewDetail = (record) => {
     setCurrentChat(record);
     setDetailVisible(true);
   };
@@ -248,29 +225,28 @@ const ChatHistoryPage: React.FC = () => {
       <div className="chat-history-header">
         <Title level={2}>聊天记录</Title>
         <div className="filter-container">
-          <Space wrap>
+          <Space size="middle">
             <Input
               placeholder="搜索关键词"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={e => setSearchText(e.target.value)}
               prefix={<SearchOutlined />}
               style={{ width: 200 }}
             />
             <RangePicker
               value={dateRange}
-              onChange={(dates) => setDateRange(dates)}
+              onChange={value => setDateRange(value)}
+              style={{ width: 300 }}
             />
             <Select
               placeholder="选择角色"
               value={selectedRole}
-              onChange={(value) => setSelectedRole(value)}
-              style={{ width: 180 }}
-              allowClear
+              onChange={value => setSelectedRole(value)}
+              style={{ width: 150 }}
             >
-              <Option value="assistant1">智能助手小明</Option>
-              <Option value="advisor1">专业顾问小华</Option>
-              <Option value="customerService">客服机器人</Option>
-              <Option value="programmingCoach">编程教练</Option>
+              <Option value="">全部</Option>
+              <Option value="user">用户</Option>
+              <Option value="assistant">助手</Option>
             </Select>
             <Button type="primary" icon={<FilterOutlined />} onClick={handleSearch}>
               筛选
@@ -280,29 +256,15 @@ const ChatHistoryPage: React.FC = () => {
         </div>
       </div>
 
-      <Card className="chat-history-list">
+      <Card className="chat-history-content">
         <List
-          itemLayout="vertical"
           dataSource={mockChatData}
-          renderItem={(item) => (
+          renderItem={item => (
             <List.Item
               key={item.id}
               actions={[
-                <Space key="info-1">
-                  <CalendarOutlined />
-                  <span>{item.startTime}</span>
-                </Space>,
-                <Space key="info-2">
-                  <MessageOutlined />
-                  <span>{item.messageCount}条消息</span>
-                </Space>,
-                <Space key="info-3">
-                  <TeamOutlined />
-                  <span>{item.userName} & {item.assistantName}</span>
-                </Space>,
-                <Button 
-                  type="link" 
-                  key="view-detail" 
+                <Button
+                  type="link"
                   icon={<EyeOutlined />}
                   onClick={() => handleViewDetail(item)}
                 >
@@ -312,106 +274,115 @@ const ChatHistoryPage: React.FC = () => {
             >
               <List.Item.Meta
                 avatar={
-                  <div className="chat-avatars">
+                  <Space>
                     <Avatar src={item.userAvatar} icon={<UserOutlined />} />
                     <Avatar src={item.assistantAvatar} icon={<RobotOutlined />} />
-                  </div>
+                  </Space>
                 }
                 title={
-                  <div className="chat-title">
-                    <span className="chat-title-text">对话 #{item.id}</span>
-                    {item.topic && <Tag color="blue">{item.topic}</Tag>}
-                    <Text type="secondary" className="chat-duration">
-                      {item.duration}
-                    </Text>
-                  </div>
+                  <Space>
+                    <Text strong>{item.topic || '未命名对话'}</Text>
+                    <Tag color="blue">{item.messageCount} 条消息</Tag>
+                  </Space>
                 }
                 description={
-                  <div className="chat-description">
-                    <Text className="chat-preview" ellipsis>
-                      {item.messages[0]?.content || '无对话内容'}
-                    </Text>
-                  </div>
+                  <Space split={<Divider type="vertical" />}>
+                    <Space>
+                      <TeamOutlined />
+                      <Text type="secondary">{item.userName} 与 {item.assistantName}</Text>
+                    </Space>
+                    <Space>
+                      <CalendarOutlined />
+                      <Text type="secondary">{item.startTime}</Text>
+                    </Space>
+                    <Space>
+                      <MessageOutlined />
+                      <Text type="secondary">对话时长：{item.duration}</Text>
+                    </Space>
+                  </Space>
                 }
               />
             </List.Item>
           )}
         />
         <div className="pagination-container">
-          <Pagination 
+          <Pagination
             current={currentPage}
-            total={50}
             pageSize={pageSize}
+            total={mockChatData.length}
             onChange={(page, size) => {
               setCurrentPage(page);
               setPageSize(size);
             }}
             showSizeChanger
             showQuickJumper
-            showTotal={(total) => `共 ${total} 条记录`}
+            showTotal={total => `共 ${total} 条记录`}
           />
         </div>
       </Card>
 
       <Drawer
-        title={
-          <div className="chat-detail-title">
-            {currentChat && (
-              <>
-                <div>
-                  <Space>
-                    <span>对话 #{currentChat.id}</span>
-                    {currentChat.topic && <Tag color="blue">{currentChat.topic}</Tag>}
-                  </Space>
-                </div>
-                <div className="chat-detail-info">
-                  <Space>
-                    <CalendarOutlined />
-                    <span>{currentChat.startTime} ~ {currentChat.endTime}</span>
-                    <Divider type="vertical" />
-                    <MessageOutlined />
-                    <span>{currentChat.messageCount}条消息</span>
-                  </Space>
-                </div>
-              </>
-            )}
-          </div>
-        }
-        width={640}
+        title="对话详情"
         placement="right"
+        width={600}
         onClose={() => setDetailVisible(false)}
         open={detailVisible}
       >
-        {currentChat ? (
-          <div className="chat-messages">
-            {currentChat.messages.map((message) => (
-              <div
-                key={message.id}
-                className={`message-item ${message.sender === 'user' ? 'user-message' : 'assistant-message'}`}
-              >
-                <div className="message-avatar">
-                  {message.sender === 'user' ? (
+        {currentChat && (
+          <div>
+            <div className="chat-info">
+              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                <div>
+                  <Text type="secondary">对话主题：</Text>
+                  <Text strong>{currentChat.topic || '未命名对话'}</Text>
+                </div>
+                <div>
+                  <Text type="secondary">参与者：</Text>
+                  <Space>
                     <Avatar src={currentChat.userAvatar} icon={<UserOutlined />} />
-                  ) : (
+                    <Text>{currentChat.userName}</Text>
+                    <Text type="secondary">与</Text>
                     <Avatar src={currentChat.assistantAvatar} icon={<RobotOutlined />} />
-                  )}
+                    <Text>{currentChat.assistantName}</Text>
+                  </Space>
                 </div>
-                <div className="message-content">
-                  <div className="message-header">
-                    <span className="message-name">
-                      {message.sender === 'user' ? currentChat.userName : currentChat.assistantName}
-                    </span>
-                    <span className="message-time">{message.timestamp}</span>
-                  </div>
-                  <div className="message-text">
-                    <Paragraph>{message.content}</Paragraph>
-                  </div>
+                <div>
+                  <Text type="secondary">对话时间：</Text>
+                  <Text>{currentChat.startTime} 至 {currentChat.endTime}</Text>
                 </div>
-              </div>
-            ))}
+                <div>
+                  <Text type="secondary">对话时长：</Text>
+                  <Text>{currentChat.duration}</Text>
+                </div>
+              </Space>
+            </div>
+            <Divider />
+            <div className="chat-messages">
+              <List
+                dataSource={currentChat.messages}
+                renderItem={message => (
+                  <List.Item className={`message-item ${message.sender}`}>
+                    <Space align="start">
+                      <Avatar
+                        src={message.sender === 'user' ? currentChat.userAvatar : currentChat.assistantAvatar}
+                        icon={message.sender === 'user' ? <UserOutlined /> : <RobotOutlined />}
+                      />
+                      <div className="message-content">
+                        <Text type="secondary" className="message-time">
+                          {message.timestamp}
+                        </Text>
+                        <div className="message-text">
+                          <Paragraph style={{ whiteSpace: 'pre-wrap' }}>
+                            {message.content}
+                          </Paragraph>
+                        </div>
+                      </div>
+                    </Space>
+                  </List.Item>
+                )}
+              />
+            </div>
           </div>
-        ) : (
-          <Empty description="未选择对话" />
         )}
       </Drawer>
     </div>

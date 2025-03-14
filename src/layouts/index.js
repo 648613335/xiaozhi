@@ -18,11 +18,11 @@ const { Header, Sider, Content } = Layout;
 const menuRoutes = typeof menus === 'function' ? menus() : menus;
 
 // 定义一个名为 BasicLayout 的 React 组件，使用 React.FC 类型
-const BasicLayout: React.FC = () => {
+const BasicLayout = () => {
   // 使用 useState 钩子定义一个名为 collapsed 的状态变量，初始值为 false
   const [collapsed, setCollapsed] = useState(false);
   // 使用 useState 钩子定义一个名为 currentUser 的状态变量，初始值为 null，类型为 any
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState(null);
   // 使用 useLocation 钩子获取当前路由位置
   const location = useLocation();
 
@@ -47,7 +47,7 @@ const BasicLayout: React.FC = () => {
     logout(); // 调用 logout 函数执行退出操作
   };
 
-  const handprofile=()=>{
+  const handprofile = () => {
     history.push('/profile')
   }
 
@@ -100,7 +100,7 @@ const BasicLayout: React.FC = () => {
 
             {currentUser && (
               <div style={{ marginRight: 24 }}>
-                <Dropdown overlay={userMenu} trigger={['click']}>
+                <Dropdown menu={userMenu} trigger={['click']}>
                   <Space style={{ cursor: 'pointer' }}>
                     <Avatar src={currentUser.avatar} />
                     <span>{currentUser.name}</span>

@@ -1,0 +1,45 @@
+.security-container {
+  padding: 24px;
+}
+
+.status-row {
+  margin-bottom: 24px;
+}
+
+.section-card {
+  margin-bottom: 24px;
+}
+
+.ant-card-head-title {
+  font-weight: 500;
+}
+
+.ant-statistic-title {
+  font-size: 14px;
+}
+
+.ant-statistic-content {
+  font-size: 20px;
+}
+
+/* 图表容器样式 */
+.echarts-for-react {
+  height: 300px !important;
+}
+
+/* 表格样式优化 */
+.ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 500;
+}
+
+/* 标签样式优化 */
+.ant-tag {
+  min-width: 48px;
+  text-align: center;
+}
+
+/* 开关样式优化 */
+.ant-switch {
+  margin-left: 8px;
+} 

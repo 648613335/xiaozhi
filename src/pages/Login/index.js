@@ -7,15 +7,10 @@ import './login.css';
 
 const { Title } = Typography;
 
-interface LoginParams {
-  username: string;
-  password: string;
-}
-
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values: LoginParams) => {
+  const handleSubmit = async (values) => {
     setLoading(true);
     // 模拟登录请求
     try {

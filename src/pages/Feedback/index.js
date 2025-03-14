@@ -1,27 +1,11 @@
 import React, { useState } from 'react';
 import { Table, Card, Space, Tag, Button, Modal, Form, Input, Select, message } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
 
-interface FeedbackItem {
-  id: string;
-  title: string;
-  content: string;
-  type: string;
-  priority: string;
-  status: string;
-  createTime: string;
-  submitter: string;
-}
-
-// 定义一个名为FeedbackPage的React组件，使用React.FC类型
-const FeedbackPage: React.FC = () => {
-  // 使用Form.useForm()创建一个表单实例
+const FeedbackPage = () => {
   const [form] = Form.useForm();
-  // 使用useState管理模态框的显示状态
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // 使用useState管理反馈数据，初始数据包含一个示例数据
-  const [feedbackData, setFeedbackData] = useState<FeedbackItem[]>([
+  const [feedbackData, setFeedbackData] = useState([
     {
       id: '1',
       title: '系统响应速度慢',
@@ -32,11 +16,9 @@ const FeedbackPage: React.FC = () => {
       createTime: '2024-03-20 10:00:00',
       submitter: '张三'
     },
-    // 示例数据
   ]);
 
-  // 定义表格列的配置
-  const columns: ColumnsType<FeedbackItem> = [
+  const columns = [
     {
       title: '标题',
       dataIndex: 'title',
@@ -46,8 +28,7 @@ const FeedbackPage: React.FC = () => {
       title: '类型',
       dataIndex: 'type',
       key: 'type',
-      // 根据类型显示不同颜色的标签
-      render: (type: string) => (
+      render: (type) => (
         <Tag color={type === '性能问题' ? 'red' : type === '功能建议' ? 'green' : 'blue'}>
           {type}
         </Tag>
@@ -57,8 +38,7 @@ const FeedbackPage: React.FC = () => {
       title: '优先级',
       dataIndex: 'priority',
       key: 'priority',
-      // 根据优先级显示不同颜色的标签
-      render: (priority: string) => (
+      render: (priority) => (
         <Tag color={priority === '高' ? 'red' : priority === '中' ? 'orange' : 'green'}>
           {priority}
         </Tag>
@@ -68,7 +48,7 @@ const FeedbackPage: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
+      render: (status) => (
         <Tag color={status === '待处理' ? 'orange' : status === '处理中' ? 'blue' : 'green'}>
           {status}
         </Tag>
@@ -96,7 +76,7 @@ const FeedbackPage: React.FC = () => {
     },
   ];
 
-  const handleView = (record: FeedbackItem) => {
+  const handleView = (record) => {
     Modal.info({
       title: '反馈详情',
       content: (
@@ -114,7 +94,7 @@ const FeedbackPage: React.FC = () => {
     });
   };
 
-  const handleEdit = (record: FeedbackItem) => {
+  const handleEdit = (record) => {
     form.setFieldsValue(record);
     setIsModalVisible(true);
   };

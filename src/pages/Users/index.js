@@ -4,7 +4,7 @@ import '@/assets/global.css';
 
 const { Title } = Typography;
 
-const UsersPage: React.FC = () => {
+const UsersPage = () => {
   return (
     <div className="content-container">
       <Title level={2}>用户管理</Title>

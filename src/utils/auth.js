@@ -1,7 +1,7 @@
 // auth.ts - 用户认证工具函数
 
 // 检查用户是否已经登录
-export const isUserLoggedIn = (): boolean => {
+export const isUserLoggedIn = () => {
     return !!localStorage.getItem('token');
 };
 
@@ -20,7 +20,7 @@ export const getCurrentUser = () => {
 };
 
 // 更新用户信息
-export const updateUserProfile = async (userData: any) => {
+export const updateUserProfile = async (userData) => {
     try {
         // 模拟API调用，实际项目应替换为真实API
         return new Promise(resolve => {
@@ -38,10 +38,7 @@ export const updateUserProfile = async (userData: any) => {
 };
 
 // 更新用户密码
-export const updatePassword = async (passwordData: {
-    oldPassword: string;
-    newPassword: string;
-}) => {
+export const updatePassword = async (passwordData) => {
     try {
         // 模拟API调用，实际项目应替换为真实API
         return new Promise((resolve, reject) => {
@@ -69,7 +66,7 @@ export const logout = () => {
 };
 
 // 模拟登录函数
-export const login = async (username: string, password: string) => {
+export const login = async (username, password) => {
     // 模拟API调用，实际项目应替换为真实API
     return new Promise((resolve, reject) => {
         setTimeout(() => {

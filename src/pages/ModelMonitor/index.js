@@ -4,7 +4,7 @@ import '@/assets/global.css';
 
 const { Title } = Typography;
 
-const ModelMonitorPage: React.FC = () => {
+const ModelMonitorPage = () => {
     return (
         <div className="content-container">
             <Title level={2}>模型监控</Title>

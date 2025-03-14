@@ -26,35 +26,11 @@ import {
 } from '@ant-design/icons';
 import '@/assets/global.css';
 
-interface RoleData {
-  id: number;
-  nickname: string;
-  template: string;
-  voiceName: string;
-  voicePreference: string;
-  introduction: string;
-  tokenCount: number;
-  languageModel: string;
-  verificationCode?: string;
-}
-
-interface ChatMessage {
-  id: number;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-}
-
-interface ChatHistory {
-  roleId: number;
-  messages: ChatMessage[];
-}
-
 const { TextArea } = Input;
 const { Text } = Typography;
 
 // 模拟数据
-const initialData: RoleData[] = [
+const initialData = [
   {
     id: 1,
     nickname: '智能助手小明',
@@ -80,7 +56,7 @@ const initialData: RoleData[] = [
 ];
 
 // 模拟历史对话数据
-const mockChatHistory: ChatHistory[] = [
+const mockChatHistory = [
   {
     roleId: 1,
     messages: [
@@ -129,108 +105,88 @@ const mockChatHistory: ChatHistory[] = [
   },
 ];
 
-// 定义一个名为 RolesPage 的 React 组件，使用函数组件和 React.FC 类型
-const RolesPage: React.FC = () => {
-  // 使用 useState 钩子管理角色数据，初始值为 initialData
-  const [data, setData] = useState<RoleData[]>(initialData);
-  // 使用 useState 钩子管理模态框的可见性，初始值为 false
+const RolesPage = () => {
+  const [data, setData] = useState(initialData);
   const [modalVisible, setModalVisible] = useState(false);
-  // 使用 useState 钩子管理当前正在编辑的角色记录，初始值为 null
-  const [editingRecord, setEditingRecord] = useState<RoleData | null>(null);
-  // 使用 useState 钩子管理验证码模态框的可见性，初始值为 false
+  const [editingRecord, setEditingRecord] = useState(null);
   const [verificationModalVisible, setVerificationModalVisible] = useState(false);
-  // 使用 useState 钩子管理当前操作的记录 ID，初始值为 null
-  const [currentId, setCurrentId] = useState<number | null>(null);
-  // 使用 Form.useForm 钩子创建一个表单实例
+  const [currentId, setCurrentId] = useState(null);
   const [form] = Form.useForm();
-  // 使用 Form.useForm 钩子创建一个验证码表单实例
   const [verificationForm] = Form.useForm();
-  // 使用 useState 钩子管理抽屉的可见性，初始值为 false
   const [drawerVisible, setDrawerVisible] = useState(false);
-  // 使用 useState 钩子管理当前查看的聊天历史记录，初始值为空数组
-  const [currentChatHistory, setCurrentChatHistory] = useState<ChatMessage[]>([]);
+  const [currentChatHistory, setCurrentChatHistory] = useState([]);
 
-  // 处理添加角色按钮点击事件
   const handleAdd = () => {
-    setEditingRecord(null); // 清空当前编辑记录
-    form.resetFields(); // 重置表单字段
-    setModalVisible(true); // 显示模态框
+    setEditingRecord(null);
+    form.resetFields();
+    setModalVisible(true);
   };
 
-  // 处理编辑角色按钮点击事件
-  const handleEdit = (record: RoleData) => {
-    setEditingRecord(record); // 设置当前编辑记录
-    form.setFieldsValue(record); // 设置表单字段值为当前记录的数据
-    setModalVisible(true); // 显示模态框
+  const handleEdit = (record) => {
+    setEditingRecord(record);
+    form.setFieldsValue(record);
+    setModalVisible(true);
   };
 
-  // 处理删除角色按钮点击事件
-  const handleDelete = (id: number) => {
+  const handleDelete = (id) => {
     Modal.confirm({
       okText: '确认',
       cancelText: '取消',
-      title: '确认删除', // 模态框标题
-      content: '确定要删除这个角色吗？', // 模态框内容
+      title: '确认删除',
+      content: '确定要删除这个角色吗？',
       onOk: () => {
-        setData(data.filter(item => item.id !== id)); // 过滤掉当前 ID 的记录
-        message.success('删除成功'); // 显示删除成功的消息
+        setData(data.filter(item => item.id !== id));
+        message.success('删除成功');
       },
     });
   };
 
-  // 处理添加或更新设备验证码按钮点击事件
-  const handleVerification = (id: number) => {
-    setCurrentId(id); // 设置当前操作的记录 ID
-    verificationForm.resetFields(); // 重置验证码表单字段
-    setVerificationModalVisible(true); // 显示验证码模态框
+  const handleVerification = (id) => {
+    setCurrentId(id);
+    verificationForm.resetFields();
+    setVerificationModalVisible(true);
   };
 
-  // 处理验证码模态框确认按钮点击事件
   const handleVerificationOk = async () => {
     try {
-      const values = await verificationForm.validateFields(); // 获取验证码表单的值
+      const values = await verificationForm.validateFields();
       if (currentId) {
         setData(data.map(item =>
           item.id === currentId ? { ...item, verificationCode: values.verificationCode } : item
-        )); // 更新当前记录的验证码
-        message.success('设备验证码添加成功'); // 显示添加成功的消息
-        setVerificationModalVisible(false); // 关闭验证码模态框
+        ));
+        message.success('设备验证码添加成功');
+        setVerificationModalVisible(false);
       }
     } catch (error) {
-      console.error('验证码表单验证失败:', error); // 打印错误信息
+      console.error('验证码表单验证失败:', error);
     }
   };
 
-  // 处理模态框确认按钮点击事件
   const handleModalOk = async () => {
     try {
-      const values = await form.validateFields(); // 获取表单的值
+      const values = await form.validateFields();
       if (editingRecord) {
-        // 编辑现有记录
         setData(data.map(item =>
           item.id === editingRecord.id ? { ...values, id: item.id } : item
-        )); // 更新当前记录的数据
-        message.success('更新成功'); // 显示更新成功的消息
+        ));
+        message.success('更新成功');
       } else {
-        // 添加新记录
-        const newId = Math.max(...data.map(item => item.id)) + 1; // 生成新的 ID
-        setData([...data, { ...values, id: newId }]); // 添加新记录到数据中
-        message.success('添加成功'); // 显示添加成功的消息
+        const newId = Math.max(...data.map(item => item.id)) + 1;
+        setData([...data, { ...values, id: newId }]);
+        message.success('添加成功');
       }
-      setModalVisible(false); // 关闭模态框
+      setModalVisible(false);
     } catch (error) {
-      console.error('表单验证失败:', error); // 打印错误信息
+      console.error('表单验证失败:', error);
     }
   };
 
-  // 处理查看历史对话按钮点击事件
-  const handleViewHistory = (roleId: number) => {
-    const history = mockChatHistory.find(h => h.roleId === roleId); // 查找对应角色的聊天历史
-    setCurrentChatHistory(history?.messages || []); // 设置当前查看的聊天历史记录
-    setDrawerVisible(true); // 显示抽屉
+  const handleViewHistory = (roleId) => {
+    const history = mockChatHistory.find(h => h.roleId === roleId);
+    setCurrentChatHistory(history?.messages || []);
+    setDrawerVisible(true);
   };
 
-  // 定义表格列
   const columns = [
     {
       title: 'ID',
@@ -248,7 +204,7 @@ const RolesPage: React.FC = () => {
       key: 'template',
     },
     {
-      title: '角色音色',
+      title: '语音名称',
       dataIndex: 'voiceName',
       key: 'voiceName',
     },
@@ -258,56 +214,44 @@ const RolesPage: React.FC = () => {
       key: 'voicePreference',
     },
     {
-      title: '当前Token量',
-      dataIndex: 'tokenCount',
-      key: 'tokenCount',
-      render: (text: number) => `${(text / 100000000).toFixed(2)}亿`, // 格式化 Token 量显示
-    },
-    {
       title: '语言模型',
       dataIndex: 'languageModel',
       key: 'languageModel',
     },
     {
-      title: '设备验证码',
-      dataIndex: 'verificationCode',
-      key: 'verificationCode',
-      render: (text: string, record: RoleData) => (
-        <Space>
-          {text ? (
-            <Text copyable>{text}</Text> // 如果有验证码，显示可复制的文本
-          ) : (
-            <Text type="secondary">未设置</Text> // 如果没有验证码，显示未设置
-          )}
-          <Button
-            type="link"
-            icon={<QrcodeOutlined />}
-            onClick={() => handleVerification(record.id)}
-          >
-            {text ? '更新验证码' : '添加验证码'}
-          </Button>
-        </Space>
-      ),
+      title: 'Token数量',
+      dataIndex: 'tokenCount',
+      key: 'tokenCount',
+      render: (value) => new Intl.NumberFormat().format(value),
     },
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: RoleData) => (
+      render: (_, record) => (
         <Space size="middle">
           <Button
-            type="primary"
+            type="link"
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
             编辑
           </Button>
           <Button
+            type="link"
+            icon={<QrcodeOutlined />}
+            onClick={() => handleVerification(record.id)}
+          >
+            验证码
+          </Button>
+          <Button
+            type="link"
             icon={<HistoryOutlined />}
             onClick={() => handleViewHistory(record.id)}
           >
-            历史对话
+            历史
           </Button>
           <Button
+            type="link"
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.id)}
@@ -322,28 +266,19 @@ const RolesPage: React.FC = () => {
   return (
     <div className="content-container">
       <div style={{ marginBottom: 16 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAdd}
-        >
+        <Button type="primary" onClick={handleAdd} icon={<PlusOutlined />}>
           添加角色
         </Button>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+
+      <Table columns={columns} dataSource={data} rowKey="id" />
+
       <Modal
         title={editingRecord ? '编辑角色' : '添加角色'}
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        width={720}
-        okText={'确认'}
-        cancelText={'取消'}
+        width={600}
       >
         <Form
           form={form}
@@ -354,79 +289,80 @@ const RolesPage: React.FC = () => {
             label="助手昵称"
             rules={[{ required: true, message: '请输入助手昵称' }]}
           >
-            <Input placeholder="请输入助手昵称" />
+            <Input />
           </Form.Item>
+
           <Form.Item
             name="template"
             label="角色模板"
-            rules={[{ required: true, message: '请输入角色模板' }]}
+            rules={[{ required: true, message: '请选择角色模板' }]}
           >
-            <Select placeholder="请选择角色模板">
+            <Select>
               <Select.Option value="友好活泼">友好活泼</Select.Option>
               <Select.Option value="专业严谨">专业严谨</Select.Option>
               <Select.Option value="幽默风趣">幽默风趣</Select.Option>
-              <Select.Option value="温和耐心">温和耐心</Select.Option>
             </Select>
           </Form.Item>
+
           <Form.Item
             name="voiceName"
-            label="角色音色"
-            rules={[{ required: true, message: '请输入角色音色' }]}
+            label="语音名称"
+            rules={[{ required: true, message: '请选择语音名称' }]}
           >
-            <Input placeholder="请输入角色音色" />
+            <Select>
+              <Select.Option value="精灵音">精灵音</Select.Option>
+              <Select.Option value="成熟音">成熟音</Select.Option>
+              <Select.Option value="童声">童声</Select.Option>
+            </Select>
           </Form.Item>
+
           <Form.Item
             name="voicePreference"
             label="语音偏好"
-            rules={[{ required: true, message: '请输入语音偏好' }]}
+            rules={[{ required: true, message: '请选择语音偏好' }]}
           >
-            <Select placeholder="请选择语音偏好">
+            <Select>
               <Select.Option value="温柔">温柔</Select.Option>
               <Select.Option value="稳重">稳重</Select.Option>
               <Select.Option value="活力">活力</Select.Option>
-              <Select.Option value="庄重">庄重</Select.Option>
             </Select>
           </Form.Item>
+
           <Form.Item
             name="introduction"
             label="角色介绍"
             rules={[{ required: true, message: '请输入角色介绍' }]}
           >
-            <TextArea rows={4} placeholder="请输入角色介绍" />
+            <TextArea rows={4} />
           </Form.Item>
+
           <Form.Item
             name="tokenCount"
-            label="Token量（单位：亿）"
-            rules={[{ required: true, message: '请输入Token量' }]}
+            label="Token数量"
+            rules={[{ required: true, message: '请输入Token数量' }]}
           >
-            <InputNumber
-              min={1}
-              max={1000}
-              placeholder="请输入Token量"
-              style={{ width: '100%' }}
-            />
+            <InputNumber style={{ width: '100%' }} min={1} />
           </Form.Item>
+
           <Form.Item
             name="languageModel"
             label="语言模型"
             rules={[{ required: true, message: '请选择语言模型' }]}
           >
-            <Select placeholder="请选择语言模型">
+            <Select>
               <Select.Option value="GPT-4">GPT-4</Select.Option>
-              <Select.Option value="GPT-3.5">GPT-3.5</Select.Option>
               <Select.Option value="Claude-3">Claude-3</Select.Option>
-              <Select.Option value="Claude-2">Claude-2</Select.Option>
+              <Select.Option value="Gemini">Gemini</Select.Option>
             </Select>
           </Form.Item>
         </Form>
       </Modal>
+
       <Modal
-        title="设备验证"
+        title="设备验证码"
         open={verificationModalVisible}
         onOk={handleVerificationOk}
         onCancel={() => setVerificationModalVisible(false)}
-        okText={'确认'}
-        cancelText={'取消'}
       >
         <Form
           form={verificationForm}
@@ -434,17 +370,14 @@ const RolesPage: React.FC = () => {
         >
           <Form.Item
             name="verificationCode"
-            label="设备验证码"
-            rules={[
-              { required: true, message: '请输入设备验证码' },
-              { pattern: /^[A-Za-z0-9]{6,12}$/, message: '验证码必须是6-12位字母数字组合' }
-            ]}
-            extra="验证码用于设备认证，请妥善保管"
+            label="验证码"
+            rules={[{ required: true, message: '请输入验证码' }]}
           >
-            <Input placeholder="请输入6-12位字母数字组合的验证码" />
+            <Input placeholder="请输入6位验证码" maxLength={6} />
           </Form.Item>
         </Form>
       </Modal>
+
       <Drawer
         title="历史对话记录"
         placement="right"
@@ -453,9 +386,8 @@ const RolesPage: React.FC = () => {
         open={drawerVisible}
       >
         <List
-          itemLayout="horizontal"
           dataSource={currentChatHistory}
-          renderItem={(item) => (
+          renderItem={item => (
             <List.Item>
               <List.Item.Meta
                 avatar={
@@ -463,10 +395,8 @@ const RolesPage: React.FC = () => {
                 }
                 title={
                   <Space>
-                    <Tag color={item.role === 'user' ? 'blue' : 'green'}>
-                      {item.role === 'user' ? '用户' : '助手'}
-                    </Tag>
-                    <span>{item.timestamp}</span>
+                    <Text strong>{item.role === 'user' ? '用户' : '助手'}</Text>
+                    <Text type="secondary">{item.timestamp}</Text>
                   </Space>
                 }
                 description={item.content}

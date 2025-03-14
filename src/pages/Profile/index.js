@@ -29,19 +29,11 @@ import { getCurrentUser, updateUserProfile, updatePassword } from '@/utils/auth'
 const { Option } = Select;
 const { TabPane } = Tabs;
 
-interface UserProfile {
-  name: string;
-  phone: string;
-  email: string;
-  gender: string;
-  avatar?: string;
-}
-
-const ProfilePage: React.FC = () => {
+const ProfilePage = () => {
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
 
   // 加载用户信息
@@ -69,7 +61,7 @@ const ProfilePage: React.FC = () => {
   }, [form]);
 
   // 处理基本信息更新
-  const handleUpdateProfile = async (values: UserProfile) => {
+  const handleUpdateProfile = async (values) => {
     try {
       setLoading(true);
       await updateUserProfile(values);
@@ -83,7 +75,7 @@ const ProfilePage: React.FC = () => {
   };
 
   // 处理密码修改
-  const handleUpdatePassword = async (values: any) => {
+  const handleUpdatePassword = async (values) => {
     try {
       setLoading(true);
       await updatePassword({
@@ -270,4 +262,4 @@ const ProfilePage: React.FC = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfilePage; 
