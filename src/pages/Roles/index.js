@@ -1,64 +1,17 @@
-import React, { useState } from 'react';
-import {
-  Table,
-  Button,
-  Space,
-  Modal,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  message,
-  Typography,
-  Drawer,
-  List,
-  Avatar,
-  Tag,
-} from 'antd';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  PlusOutlined,
-  QrcodeOutlined,
-  HistoryOutlined,
-  UserOutlined,
-  RobotOutlined,
-} from '@ant-design/icons';
-import '@/assets/global.css';
+import React, { useState, useEffect } from 'react';
+import { Typography, Button, Space, Input, Form, Select, Card, message, Modal, Drawer, List, Avatar, Tag, TextArea } from 'antd';
+import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined, PlusOutlined, QrcodeOutlined, HistoryOutlined, UserOutlined, RobotOutlined } from '@ant-design/icons';
+import { C_Table, C_Form } from '@/components';
+import service from '@/utils/service';
+import comData from '@/utils/comData';
 
-const { TextArea } = Input;
-const { Text } = Typography;
-
-// 模拟数据
-const initialData = [
-  {
-    id: 1,
-    nickname: '智能助手小明',
-    template: '友好活泼',
-    voiceName: '精灵音',
-    voicePreference: '温柔',
-    introduction: '我是一个充满活力的AI助手，喜欢帮助他人解决问题。',
-    tokenCount: 100000000,
-    languageModel: 'GPT-4',
-    verificationCode: 'ABC123',
-  },
-  {
-    id: 2,
-    nickname: '专业顾问小华',
-    template: '专业严谨',
-    voiceName: '成熟音',
-    voicePreference: '稳重',
-    introduction: '专注于提供专业的商业咨询和技术指导。',
-    tokenCount: 200000000,
-    languageModel: 'Claude-3',
-    verificationCode: 'XYZ789',
-  },
-];
+const { Title, Text } = Typography;
+const { Option } = Select;
 
 // 模拟历史对话数据
 const mockChatHistory = [
   {
-    roleId: 1,
+    roleId: '1',
     messages: [
       {
         id: 1,
@@ -72,22 +25,10 @@ const mockChatHistory = [
         content: '你好！我是智能助手小明，我的性格友好活泼，很高兴能帮助你解决问题。',
         timestamp: '2024-03-20 14:30:05',
       },
-      {
-        id: 3,
-        role: 'user',
-        content: '你能做些什么？',
-        timestamp: '2024-03-20 14:31:00',
-      },
-      {
-        id: 4,
-        role: 'assistant',
-        content: '我可以帮你回答问题、编写代码、分析数据，以及进行日常对话交流等。需要我为你做什么吗？',
-        timestamp: '2024-03-20 14:31:05',
-      },
     ],
   },
   {
-    roleId: 2,
+    roleId: '2',
     messages: [
       {
         id: 1,
@@ -106,112 +47,29 @@ const mockChatHistory = [
 ];
 
 const RolesPage = () => {
-  const [data, setData] = useState(initialData);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState(null);
-  const [verificationModalVisible, setVerificationModalVisible] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [dataSource, setDataSource] = useState([]);
+  const [searchForm] = Form.useForm();
+  const [editform] = Form.useForm();
   const [verificationForm] = Form.useForm();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [verificationModalVisible, setVerificationModalVisible] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
   const [currentChatHistory, setCurrentChatHistory] = useState([]);
 
-  const handleAdd = () => {
-    setEditingRecord(null);
-    form.resetFields();
-    setModalVisible(true);
-  };
-
-  const handleEdit = (record) => {
-    setEditingRecord(record);
-    form.setFieldsValue(record);
-    setModalVisible(true);
-  };
-
-  const handleDelete = (id) => {
-    Modal.confirm({
-      okText: '确认',
-      cancelText: '取消',
-      title: '确认删除',
-      content: '确定要删除这个角色吗？',
-      onOk: () => {
-        setData(data.filter(item => item.id !== id));
-        message.success('删除成功');
-      },
-    });
-  };
-
-  const handleVerification = (id) => {
-    setCurrentId(id);
-    verificationForm.resetFields();
-    setVerificationModalVisible(true);
-  };
-
-  const handleVerificationOk = async () => {
-    try {
-      const values = await verificationForm.validateFields();
-      if (currentId) {
-        setData(data.map(item =>
-          item.id === currentId ? { ...item, verificationCode: values.verificationCode } : item
-        ));
-        message.success('设备验证码添加成功');
-        setVerificationModalVisible(false);
-      }
-    } catch (error) {
-      console.error('验证码表单验证失败:', error);
-    }
-  };
-
-  const handleModalOk = async () => {
-    try {
-      const values = await form.validateFields();
-      if (editingRecord) {
-        setData(data.map(item =>
-          item.id === editingRecord.id ? { ...values, id: item.id } : item
-        ));
-        message.success('更新成功');
-      } else {
-        const newId = Math.max(...data.map(item => item.id)) + 1;
-        setData([...data, { ...values, id: newId }]);
-        message.success('添加成功');
-      }
-      setModalVisible(false);
-    } catch (error) {
-      console.error('表单验证失败:', error);
-    }
-  };
-
-  const handleViewHistory = (roleId) => {
-    const history = mockChatHistory.find(h => h.roleId === roleId);
-    setCurrentChatHistory(history?.messages || []);
-    setDrawerVisible(true);
-  };
-
+  // 表格列定义
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: '助手昵称',
-      dataIndex: 'nickname',
-      key: 'nickname',
-    },
-    {
-      title: '角色模板',
-      dataIndex: 'template',
-      key: 'template',
+      title: '角色名称',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '语音名称',
-      dataIndex: 'voiceName',
-      key: 'voiceName',
-    },
-    {
-      title: '语音偏好',
-      dataIndex: 'voicePreference',
-      key: 'voicePreference',
+      dataIndex: 'timbre',
+      key: 'timbre',
     },
     {
       title: '语言模型',
@@ -219,10 +77,9 @@ const RolesPage = () => {
       key: 'languageModel',
     },
     {
-      title: 'Token数量',
-      dataIndex: 'tokenCount',
-      key: 'tokenCount',
-      render: (value) => new Intl.NumberFormat().format(value),
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
     },
     {
       title: '操作',
@@ -232,7 +89,7 @@ const RolesPage = () => {
           <Button
             type="link"
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
+            onClick={() => handleEditShow(record)}
           >
             编辑
           </Button>
@@ -254,7 +111,7 @@ const RolesPage = () => {
             type="link"
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDeleteShow(record.id)}
           >
             删除
           </Button>
@@ -263,96 +120,299 @@ const RolesPage = () => {
     },
   ];
 
+  // 查询列表数据
+  const fetch = async (params = {}) => {
+    setLoading(true);
+    setDataSource([])
+    try {
+      const response = await service.getlist('roles/list', { page: 1, ...params });
+      if (response.success && response.data) {
+        const data = response.data.map((item, index) => ({
+          key: index,
+          ...item,
+        }));
+        setDataSource(data);
+      } else {
+        message.error('获取用户数据失败');
+      }
+    } catch (error) {
+      message.error('获取用户数据失败');
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  // 处理搜索
+  const handleSearch = async () => {
+    const values = await searchForm.validateFields();
+    fetch(values);
+  };
+
+  // 重置搜索
+  const handleReset = () => {
+    searchForm.resetFields();
+    fetch();
+  };
+
+  // 处理添加角色
+  const handleAddShow = () => {
+    setEditing(1)
+    editform.resetFields();
+    setModalVisible(true);
+  };
+
+  // 新增
+  const handleAdd = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('roles/rolesadd', { ...params });
+      if (response.success) {
+        message.error('编辑成功');
+        setModalVisible(false);
+      } else {
+        message.error('编辑失败');
+      }
+    } catch (error) {
+      message.error('编辑失败');
+    }
+    setLoading(false);
+  };
+
+  // 处理编辑角色
+  const handleEditShow = (record) => {
+    setEditing(0)
+    handleDetail(record.id)
+  };
+
+  // 编辑
+  const handleEdit = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('roles/rolesedit', { ...params });
+      if (response.success) {
+        message.error('编辑成功');
+        setModalVisible(false);
+      } else {
+        message.error('编辑失败');
+      }
+    } catch (error) {
+      message.error('编辑失败');
+    }
+    setLoading(false);
+  };
+
+  // 根据id查询详情
+  const handleDetail = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('roles/rolesquery', { ...params });
+      if (response.success && response.data) {
+        setModalVisible(true);
+        editform.setFieldsValue(response.data);
+      } else {
+        message.error('获取用户数据失败');
+      }
+    } catch (error) {
+      message.error('获取用户数据失败');
+    }
+    setLoading(false);
+  };
+
+  // 根据id查询详情
+  const handleDelete = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('roles/rolesdelete', { ...params });
+      if (response.success) {
+        fetch();
+      } else {
+        message.error('操作失败');
+      }
+    } catch (error) {
+      message.error('操作失败');
+    }
+    setLoading(false);
+  };
+
+  // 处理删除角色
+  const handleDeleteShow = (id) => {
+    Modal.confirm({
+      title: '确认删除',
+      content: '确定要删除这个角色吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        handleDelete(id);
+      },
+    });
+  };
+
+  // 处理验证码
+  const handleVerification = (id) => {
+    setCurrentId(id);
+    verificationForm.resetFields();
+    setVerificationModalVisible(true);
+  };
+
+  // 处理验证码确认
+  const handleVerificationOk = async () => {
+    try {
+      const values = await verificationForm.validateFields();
+      message.success('验证码设置成功');
+      setVerificationModalVisible(false);
+    } catch (error) {
+      console.error('验证码表单验证失败:', error);
+    }
+  };
+
+  // 处理表单提交
+  const handleModalOk = async () => {
+    try {
+      const values = await editform.validateFields();
+      if (editing) {
+        await handleAdd(values);
+      } else {
+        await handleEdit(values);
+      }
+      setModalVisible(false);
+    } catch (error) {
+      console.error('表单验证失败:', error);
+    }
+  };
+
+  // 处理查看历史
+  const handleViewHistory = (roleId) => {
+    const history = mockChatHistory.find(h => h.roleId === roleId);
+    setCurrentChatHistory(history?.messages || []);
+    setDrawerVisible(true);
+  };
+
   return (
-    <div className="content-container">
-      <div style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={handleAdd} icon={<PlusOutlined />}>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+        <Title level={2}>角色管理</Title>
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddShow}>
           添加角色
         </Button>
       </div>
 
-      <Table columns={columns} dataSource={data} rowKey="id" />
+      <Card>
+        <C_Form
+          form={{
+            form: searchForm,
+            layout: "inline",
+            handleSearch,
+            handleReset
+          }}
+          formItems={[
+            {
+              label: "角色名称",
+              name: "name",
+              type: 'input',
+              input: {
+                placeholder: "请输入角色名称"
+              }
+            },
+            {
+              label: "语音名称",
+              name: "timbre",
+              type: 'input',
+              input: {
+                placeholder: "请输入语音名称"
+              }
+            },
+            {
+              label: "语言模型",
+              name: "languageModel",
+              type: 'select',
+              select: {
+                defaultValue: 'ASR',
+                placeholder: "请输入语音名称",
+                options: comData.languageModel
+              }
+            }
+          ]}
+        />
+      </Card>
+
+      <C_Table
+        table={{ columns, dataSource, loading, rowKey: 'id' }}
+        pagination={{
+          pageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `共 ${total} 条记录`
+        }}
+      />
 
       <Modal
-        title={editingRecord ? '编辑角色' : '添加角色'}
+        title={editing ? '添加角色' : '编辑角色'}
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
         width={600}
+        okText="确认"
+        cancelText="取消"
       >
         <Form
-          form={form}
+          form={editform}
           layout="vertical"
         >
           <Form.Item
-            name="nickname"
-            label="助手昵称"
-            rules={[{ required: true, message: '请输入助手昵称' }]}
+            name="name"
+            label="角色名称"
+            rules={[{ required: true, message: '请输入角色名称' }]}
           >
-            <Input />
+            <Input placeholder="请输入角色名称" />
           </Form.Item>
-
           <Form.Item
-            name="template"
-            label="角色模板"
-            rules={[{ required: true, message: '请选择角色模板' }]}
-          >
-            <Select>
-              <Select.Option value="友好活泼">友好活泼</Select.Option>
-              <Select.Option value="专业严谨">专业严谨</Select.Option>
-              <Select.Option value="幽默风趣">幽默风趣</Select.Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="voiceName"
+            name="timbre"
             label="语音名称"
             rules={[{ required: true, message: '请选择语音名称' }]}
           >
-            <Select>
-              <Select.Option value="精灵音">精灵音</Select.Option>
-              <Select.Option value="成熟音">成熟音</Select.Option>
-              <Select.Option value="童声">童声</Select.Option>
+            <Select placeholder="请选择语音名称">
+              <Option value="小美">小美</Option>
+              <Option value="小强">小强</Option>
+              <Option value="小智">小智</Option>
             </Select>
           </Form.Item>
-
           <Form.Item
-            name="voicePreference"
-            label="语音偏好"
-            rules={[{ required: true, message: '请选择语音偏好' }]}
+            name="language"
+            label="语言偏好"
+            rules={[{ required: true, message: '请选择语言偏好' }]}
           >
-            <Select>
-              <Select.Option value="温柔">温柔</Select.Option>
-              <Select.Option value="稳重">稳重</Select.Option>
-              <Select.Option value="活力">活力</Select.Option>
+            <Select placeholder="请选择语言偏好">
+              <Option value="温柔">温柔</Option>
+              <Option value="稳重">稳重</Option>
+              <Option value="活力">活力</Option>
             </Select>
           </Form.Item>
-
           <Form.Item
-            name="introduction"
+            name="introduce"
             label="角色介绍"
             rules={[{ required: true, message: '请输入角色介绍' }]}
           >
-            <TextArea rows={4} />
+            <Input.TextArea rows={4} placeholder="请输入角色介绍" />
           </Form.Item>
-
           <Form.Item
-            name="tokenCount"
-            label="Token数量"
-            rules={[{ required: true, message: '请输入Token数量' }]}
+            name="memory"
+            label="记忆体"
+            rules={[{ required: true, message: '请输入记忆体' }]}
           >
-            <InputNumber style={{ width: '100%' }} min={1} />
+            <Input.TextArea rows={4} placeholder="请输入记忆体" />
           </Form.Item>
-
           <Form.Item
             name="languageModel"
             label="语言模型"
             rules={[{ required: true, message: '请选择语言模型' }]}
           >
-            <Select>
-              <Select.Option value="GPT-4">GPT-4</Select.Option>
-              <Select.Option value="Claude-3">Claude-3</Select.Option>
-              <Select.Option value="Gemini">Gemini</Select.Option>
+            <Select placeholder="请选择语言模型">
+              <Option value="GPT-3.5">GPT-3.5</Option>
+              <Option value="GPT-4">GPT-4</Option>
+              <Option value="Claude">Claude</Option>
             </Select>
           </Form.Item>
         </Form>
@@ -363,6 +423,8 @@ const RolesPage = () => {
         open={verificationModalVisible}
         onOk={handleVerificationOk}
         onCancel={() => setVerificationModalVisible(false)}
+        okText="确认"
+        cancelText="取消"
       >
         <Form
           form={verificationForm}

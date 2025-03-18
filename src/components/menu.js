@@ -12,7 +12,7 @@ import {
     ShareAltOutlined,
     SafetyCertificateOutlined,
     RocketOutlined
-  } from '@ant-design/icons';
+} from '@ant-design/icons';
 
 // 定义一个名为 menus 的常量，它是一个函数，返回一个包含多个菜单项的数组
 const menus = () => {
@@ -43,6 +43,16 @@ const menus = () => {
             name: '角色管理',
             component: './Roles',
             icon: <TeamOutlined />,
+        },
+        {
+            name: '声纹识别',
+            path: '/voiceprint',
+            icon: <SafetyCertificateOutlined />,
+        },
+        {
+            name: '表情包管理',
+            path: '/emoji',
+            icon: <SafetyCertificateOutlined />,
         },
         {
             path: '/statistics',
@@ -77,8 +87,13 @@ const menus = () => {
         {
             name: '安全防护',
             path: '/security',
-            icon:<SafetyCertificateOutlined />,
-          }
+            icon: <SafetyCertificateOutlined />,
+        },
+        {
+            name: '权限管理',
+            path: '/permissions',
+            icon: <SafetyCertificateOutlined />,
+        }
     ]
 }
 export default menus

@@ -4,27 +4,9 @@
  * Description: 
  */
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  Form,
-  Input,
-  Button,
-  message,
-  Upload,
-  Avatar,
-  Select,
-  Tabs,
-  Spin,
-  Space
-} from 'antd';
-import {
-  UserOutlined,
-  PhoneOutlined,
-  MailOutlined,
-  LockOutlined,
-  UploadOutlined
-} from '@ant-design/icons';
-import { getCurrentUser, updateUserProfile, updatePassword } from '@/utils/auth';
+import { Card, Form, Input, Button, message, Upload, Avatar, Select, Tabs, Spin, Space } from 'antd';
+import { UserOutlined, PhoneOutlined, MailOutlined, LockOutlined, UploadOutlined } from '@ant-design/icons';
+import { getCurrentUser, updateUserProfile, updatePassword } from '@/utils/common';
 
 const { Option } = Select;
 const { TabPane } = Tabs;

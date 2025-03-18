@@ -12,7 +12,7 @@ const HomePage = () => {
   const moduleCount = 12;
 
   return (
-    <div className="content-container">
+    <div>
       <Typography>
         <Title level={2}>欢迎使用后台管理系统</Title>
         <Paragraph>

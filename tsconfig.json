@@ -7,7 +7,7 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "strict": true,
     "paths": {
       "@/*": [
@@ -18,7 +18,11 @@
       ]
     },
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
   "include": [
     "src/**/*",
@@ -26,5 +30,10 @@
     ".umirc.ts",
     "typings.d.ts",
     "404.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
   ]
 }

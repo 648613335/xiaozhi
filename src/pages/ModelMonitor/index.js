@@ -6,7 +6,7 @@ const { Title } = Typography;
 
 const ModelMonitorPage = () => {
     return (
-        <div className="content-container">
+        <div>
             <Title level={2}>模型监控</Title>
         </div>
     );

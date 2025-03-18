@@ -1,74 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm } from 'antd';
+import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import service from '@/utils/service';
 import '@/assets/global.css';
 import Table from '@/components/c_Table';
 
 const { Title } = Typography;
+const { TextArea } = Input;
+const { Option } = Select;
 
-const UsersPage = () => {
-  const [users, setUsers] = useState([]);
+const VoiceprintPage = () => {
+  const [voiceprints, setVoiceprints] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingId, setEditingId] = useState(null);
 
-  // 获取用户数据
-  const fetchUsers = async () => {
+  // 获取声纹数据
+  const fetchVoiceprints = async () => {
     setLoading(true);
-    setUsers([])
+    setVoiceprints([]);
     try {
-      const response = await service.getlist('users/list', { results: 10 });
+      const response = await service.getlist('voiceprint/list');
       if (response.success && response.data) {
-        const formattedUsers = response.data.results.map((user, index) => ({
+        // 模拟数据，实际项目中应该使用后端返回的数据
+        const mockData = Array(10).fill().map((_, index) => ({
           key: index,
-          id: user.login.uuid,
-          name: `${user.name.first} ${user.name.last}`,
-          email: user.email,
-          phone: user.phone,
-          location: `${user.location.city}, ${user.location.country}`
+          id: `vp-${index}`,
+          name: `声纹样本${index + 1}`,
+          role: ['管理员', '用户', '访客'][Math.floor(Math.random() * 3)],
+          vector: Array(5).fill().map(() => Math.random().toFixed(4)).join(', '),
+          description: `这是声纹样本${index + 1}的描述信息`
         }));
-        setUsers(formattedUsers);
+        setVoiceprints(mockData);
       } else {
-        message.error('获取用户数据失败');
+        message.error('获取声纹数据失败');
       }
     } catch (error) {
-      console.error('获取用户数据失败:', error);
-      message.error('获取用户数据失败');
+      console.error('获取声纹数据失败:', error);
+      message.error('获取声纹数据失败');
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchVoiceprints();
   }, []);
 
   // 表格列定义
   const columns = [
     {
-      title: '姓名',
+      title: '名称',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
-      key: 'email',
+      title: '角色',
+      dataIndex: 'role',
+      key: 'role',
     },
     {
-      title: '电话',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: '声纹向量',
+      dataIndex: 'vector',
+      key: 'vector',
+      ellipsis: true,
     },
     {
-      title: '地址',
-      dataIndex: 'location',
-      key: 'location',
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      ellipsis: true,
     },
     {
       title: '操作',
       key: 'action',
+      width: 200,
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -79,7 +85,7 @@ const UsersPage = () => {
             编辑
           </Button>
           <Popconfirm
-            title="确定要删除这个用户吗？"
+            title="确定要删除这条声纹记录吗？"
             onConfirm={() => handleDelete(record.key)}
             okText="确定"
             cancelText="取消"
@@ -93,32 +99,32 @@ const UsersPage = () => {
     },
   ];
 
-  // 处理添加用户
+  // 处理添加声纹
   const handleAdd = () => {
     setEditingId(null);
     form.resetFields();
     setModalVisible(true);
   };
 
-  // 处理编辑用户
+  // 处理编辑声纹
   const handleEdit = (record) => {
     setEditingId(record.key);
     form.setFieldsValue(record);
     setModalVisible(true);
   };
 
-  // 处理删除用户
+  // 处理删除声纹
   const handleDelete = async (key) => {
     try {
-      const response = await service.delete('users/delete', { id: users[key].id });
+      const response = await service.delete('voiceprint/delete', { id: voiceprints[key].id });
       if (response.success) {
-        setUsers(users.filter(item => item.key !== key));
+        setVoiceprints(voiceprints.filter(item => item.key !== key));
         message.success('删除成功');
       } else {
         message.error('删除失败');
       }
     } catch (error) {
-      console.error('删除用户失败:', error);
+      console.error('删除声纹失败:', error);
       message.error('删除失败');
     }
   };
@@ -128,29 +134,29 @@ const UsersPage = () => {
     try {
       const values = await form.validateFields();
       if (editingId === null) {
-        // 添加新用户
-        const response = await service.post('users/create', values);
+        // 添加新声纹
+        const response = await service.post('voiceprint/create', values);
         if (response.success) {
-          const newUser = {
+          const newVoiceprint = {
             ...values,
-            key: users.length,
+            key: voiceprints.length,
             id: response.data.id || `new-${Date.now()}`
           };
-          setUsers([...users, newUser]);
+          setVoiceprints([...voiceprints, newVoiceprint]);
           message.success('添加成功');
           setModalVisible(false);
         } else {
           message.error('添加失败');
         }
       } else {
-        // 更新现有用户
-        const response = await service.post('users/update', {
-          id: users[editingId].id,
+        // 更新声纹
+        const response = await service.post('voiceprint/update', {
+          id: voiceprints[editingId].id,
           ...values
         });
         if (response.success) {
-          setUsers(users.map(user =>
-            user.key === editingId ? { ...user, ...values } : user
+          setVoiceprints(voiceprints.map(item =>
+            item.key === editingId ? { ...item, ...values } : item
           ));
           message.success('更新成功');
           setModalVisible(false);
@@ -166,39 +172,41 @@ const UsersPage = () => {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>用户管理</Title>
+        <Title level={2}>声纹识别</Title>
         <Space>
           <Button
             icon={<ReloadOutlined />}
-            onClick={fetchUsers}
+            onClick={fetchVoiceprints}
           >
             刷新数据
           </Button>
           <Button
             type="primary"
-            icon={<PlusOutlined loading={!loading} />}
+            icon={<PlusOutlined />}
             onClick={handleAdd}
           >
-            添加用户
+            添加声纹
           </Button>
         </Space>
       </div>
 
       <Table
         table={{
-          columns, // 表格列配置
-          dataSource: users, // 数据源
-          loading, // 是否加载中
+          columns,
+          dataSource: voiceprints,
+          loading,
         }}
         pagination={{ pageSize: 10 }}
       />
+
       <Modal
-        title={editingId === null ? '添加用户' : '编辑用户'}
+        title={editingId === null ? '添加声纹' : '编辑声纹'}
         open={modalVisible}
         onOk={handleSubmit}
         onCancel={() => setModalVisible(false)}
         okText={editingId === null ? '添加' : '保存'}
         cancelText="取消"
+        width={600}
       >
         <Form
           form={form}
@@ -206,34 +214,38 @@ const UsersPage = () => {
         >
           <Form.Item
             name="name"
-            label="姓名"
-            rules={[{ required: true, message: '请输入姓名' }]}
+            label="名称"
+            rules={[{ required: true, message: '请输入声纹名称' }]}
           >
-            <Input />
+            <Input placeholder="请输入声纹名称" />
           </Form.Item>
           <Form.Item
-            name="email"
-            label="邮箱"
-            rules={[
-              { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '请输入有效的邮箱地址' }
-            ]}
+            name="role"
+            label="角色"
+            rules={[{ required: true, message: '请选择角色' }]}
           >
-            <Input />
+            <Select placeholder="请选择角色">
+              <Option value="管理员">管理员</Option>
+              <Option value="用户">用户</Option>
+              <Option value="访客">访客</Option>
+            </Select>
           </Form.Item>
           <Form.Item
-            name="phone"
-            label="电话"
-            rules={[{ required: true, message: '请输入电话' }]}
+            name="vector"
+            label="声纹向量"
+            rules={[{ required: true, message: '请输入声纹向量' }]}
           >
-            <Input />
+            <Input placeholder="请输入声纹向量，多个数值用逗号分隔" />
           </Form.Item>
           <Form.Item
-            name="location"
-            label="地址"
-            rules={[{ required: true, message: '请输入地址' }]}
+            name="description"
+            label="描述"
+            rules={[{ required: true, message: '请输入描述信息' }]}
           >
-            <Input />
+            <TextArea
+              rows={4}
+              placeholder="请输入描述信息"
+            />
           </Form.Item>
         </Form>
       </Modal>
@@ -241,4 +253,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage; 
+export default VoiceprintPage; 

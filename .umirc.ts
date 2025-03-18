@@ -1,9 +1,4 @@
 import { defineConfig } from '@umijs/max';
-import path from 'path';
-import stream from 'stream-browserify';
-import crypto from 'crypto-browserify';
-import buffer from 'buffer';
-import util from 'util';
 
 export default defineConfig({
   routes: [
@@ -67,6 +62,16 @@ export default defineConfig({
       component: './Security'
     },
     {
+      path: '/voiceprint',
+      name: '声纹识别',
+      component: './Voiceprint'
+    },
+    {
+      path: '/emoji',
+      name: '表情包管理',
+      component: './Emoji'
+    },
+    {
       path: '/404',
       component: './404',
     },
@@ -76,8 +81,4 @@ export default defineConfig({
     },
   ],
   npmClient: 'npm',
-  styles: [
-    '@/assets/global.css',
-  ],
-  mfsu: false,
 });

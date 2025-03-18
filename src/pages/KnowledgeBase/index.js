@@ -108,8 +108,8 @@ const statusOptions = [
 const KnowledgeBasePage = () => {
   const [dataSource, setDataSource] = useState(mockKnowledgeData);
   const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState < string > ('');
-  const [selectedStatus, setSelectedStatus] = useState < string > ('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [form] = Form.useForm();
