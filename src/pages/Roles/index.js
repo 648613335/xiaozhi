@@ -47,12 +47,14 @@ const mockChatHistory = [
 ];
 
 const RolesPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
-  const [searchForm] = Form.useForm();
-  const [editform] = Form.useForm();
-  const [verificationForm] = Form.useForm();
-  const [modalVisible, setModalVisible] = useState(false);
+
+  // 定义组件状态
+  const [loading, setLoading] = useState(false); // 加载状态
+  const [dataSource, setDataSource] = useState([]); // 表格数据源
+  const [searchForm] = Form.useForm(); // 搜索表单实例
+  const [editform] = Form.useForm(); // 编辑表单实例
+  const [verificationForm] = Form.useForm(); // 验证码表单实例
+  const [modalVisible, setModalVisible] = useState(false); // 模态框显示状态
   const [verificationModalVisible, setVerificationModalVisible] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -168,7 +170,7 @@ const RolesPage = () => {
   const handleAdd = async (params = {}) => {
     setLoading(true);
     try {
-      const response = await service.getinfo('roles/rolesadd', { ...params });
+      const response = await service.getinfo('roles/add', { ...params });
       if (response.success) {
         message.error('编辑成功');
         setModalVisible(false);
@@ -191,7 +193,7 @@ const RolesPage = () => {
   const handleEdit = async (params = {}) => {
     setLoading(true);
     try {
-      const response = await service.getinfo('roles/rolesedit', { ...params });
+      const response = await service.getinfo('roles/edit', { ...params });
       if (response.success) {
         message.error('编辑成功');
         setModalVisible(false);
@@ -208,7 +210,7 @@ const RolesPage = () => {
   const handleDetail = async (params = {}) => {
     setLoading(true);
     try {
-      const response = await service.getinfo('roles/rolesquery', { ...params });
+      const response = await service.getinfo('roles/query', { ...params });
       if (response.success && response.data) {
         setModalVisible(true);
         editform.setFieldsValue(response.data);
@@ -225,7 +227,7 @@ const RolesPage = () => {
   const handleDelete = async (params = {}) => {
     setLoading(true);
     try {
-      const response = await service.getinfo('roles/rolesdelete', { ...params });
+      const response = await service.getinfo('roles/delete', { ...params });
       if (response.success) {
         fetch();
       } else {

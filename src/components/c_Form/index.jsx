@@ -21,7 +21,7 @@ const Index = (props) => {
                                 content = (
                                     <Select allowClear {...item.select}>
                                         {
-                                            item.select.options.map((option, index) => {
+                                            item.select?.options?.map((option, index) => {
                                                 return (<Select.Option value={option.value}>{option.label}</Select.Option>)
                                             })
                                         }

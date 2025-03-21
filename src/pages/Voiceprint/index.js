@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm, Select } from 'antd';
+import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm, Select, Card } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import service from '@/utils/service';
-import '@/assets/global.css';
-import Table from '@/components/c_Table';
+import { C_Table, C_Form } from '@/components';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -11,41 +10,13 @@ const { Option } = Select;
 
 const VoiceprintPage = () => {
   const [voiceprints, setVoiceprints] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
+  const [searchForm] = Form.useForm(); // 搜索表单实例
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [form] = Form.useForm();
+  const [editform] = Form.useForm();
   const [editingId, setEditingId] = useState(null);
-
-  // 获取声纹数据
-  const fetchVoiceprints = async () => {
-    setLoading(true);
-    setVoiceprints([]);
-    try {
-      const response = await service.getlist('voiceprint/list');
-      if (response.success && response.data) {
-        // 模拟数据，实际项目中应该使用后端返回的数据
-        const mockData = Array(10).fill().map((_, index) => ({
-          key: index,
-          id: `vp-${index}`,
-          name: `声纹样本${index + 1}`,
-          role: ['管理员', '用户', '访客'][Math.floor(Math.random() * 3)],
-          vector: Array(5).fill().map(() => Math.random().toFixed(4)).join(', '),
-          description: `这是声纹样本${index + 1}的描述信息`
-        }));
-        setVoiceprints(mockData);
-      } else {
-        message.error('获取声纹数据失败');
-      }
-    } catch (error) {
-      console.error('获取声纹数据失败:', error);
-      message.error('获取声纹数据失败');
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchVoiceprints();
-  }, []);
+  const [editing, setEditing] = useState(null);
 
   // 表格列定义
   const columns = [
@@ -99,17 +70,55 @@ const VoiceprintPage = () => {
     },
   ];
 
+  // 查询列表数据
+  const fetch = async (params = {}) => {
+    setLoading(true);
+    setDataSource([])
+    try {
+      const response = await service.getlist('voiceprint/list', { page: 1, ...params });
+      if (response.success && response.data) {
+        const data = response.data.map((item, index) => ({
+          key: index,
+          ...item,
+        }));
+        setDataSource(data);
+      } else {
+        message.error('获取用户数据失败');
+      }
+    } catch (error) {
+      message.error('获取用户数据失败');
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  // 处理搜索
+  const handleSearch = async () => {
+    const values = await searchForm.validateFields();
+    fetch(values);
+  };
+
+  // 重置搜索
+  const handleReset = () => {
+    searchForm.resetFields();
+    fetch();
+  };
+
+  
   // 处理添加声纹
-  const handleAdd = () => {
-    setEditingId(null);
-    form.resetFields();
+  const handleAddShow = () => {
+    setEditing(1)
+    editform.resetFields();
     setModalVisible(true);
   };
 
   // 处理编辑声纹
   const handleEdit = (record) => {
     setEditingId(record.key);
-    form.setFieldsValue(record);
+    editform.setFieldsValue(record);
     setModalVisible(true);
   };
 
@@ -129,87 +138,85 @@ const VoiceprintPage = () => {
     }
   };
 
-  // 处理表单提交
-  const handleSubmit = async () => {
-    try {
-      const values = await form.validateFields();
-      if (editingId === null) {
-        // 添加新声纹
-        const response = await service.post('voiceprint/create', values);
-        if (response.success) {
-          const newVoiceprint = {
-            ...values,
-            key: voiceprints.length,
-            id: response.data.id || `new-${Date.now()}`
-          };
-          setVoiceprints([...voiceprints, newVoiceprint]);
-          message.success('添加成功');
-          setModalVisible(false);
-        } else {
-          message.error('添加失败');
-        }
-      } else {
-        // 更新声纹
-        const response = await service.post('voiceprint/update', {
-          id: voiceprints[editingId].id,
-          ...values
-        });
-        if (response.success) {
-          setVoiceprints(voiceprints.map(item =>
-            item.key === editingId ? { ...item, ...values } : item
-          ));
-          message.success('更新成功');
-          setModalVisible(false);
-        } else {
-          message.error('更新失败');
-        }
-      }
-    } catch (error) {
-      console.error('表单验证失败:', error);
+ // 处理表单提交
+ const handleModalOk = async () => {
+  try {
+    const values = await editform.validateFields();
+    if (editing) {
+      await handleAdd(values);
+    } else {
+      await handleEdit(values);
     }
-  };
+    setModalVisible(false);
+  } catch (error) {
+    console.error('表单验证失败:', error);
+  }
+};
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <Title level={2}>声纹识别</Title>
-        <Space>
-          <Button
-            icon={<ReloadOutlined />}
-            onClick={fetchVoiceprints}
-          >
-            刷新数据
-          </Button>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleAdd}
-          >
-            添加声纹
-          </Button>
-        </Space>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleAddShow}
+        >
+          添加声纹
+        </Button>
       </div>
+      <Card>
+        <C_Form
+          form={{
+            form: searchForm,
+            layout: "inline",
+            handleSearch,
+            handleReset
+          }}
+          formItems={[
+            {
+              label: "名称",
+              name: "name",
+              type: 'input',
+              input: {
+                placeholder: "请输入名称"
+              }
+            },
+            {
+              label: "角色名称",
+              name: "rolesid",
+              type: 'select',
+              select: {
+                defaultValue: 'ASR',
+                placeholder: "请选择角色名称",
+                options:[]
+              }
+            },
+          ]}
+        />
+      </Card>
 
-      <Table
-        table={{
-          columns,
-          dataSource: voiceprints,
-          loading,
+      <C_Table
+        table={{ columns, dataSource, loading, rowKey: 'id' }}
+        pagination={{
+          pageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `共 ${total} 条记录`
         }}
-        pagination={{ pageSize: 10 }}
       />
 
       <Modal
         title={editingId === null ? '添加声纹' : '编辑声纹'}
         open={modalVisible}
-        onOk={handleSubmit}
+        onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
         okText={editingId === null ? '添加' : '保存'}
         cancelText="取消"
         width={600}
       >
         <Form
-          form={form}
+          form={editform}
           layout="vertical"
         >
           <Form.Item

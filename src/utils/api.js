@@ -20,11 +20,23 @@ const api = {
   'emoji/delete': 'api', // 删除表情包
   'emoji/upload': 'api', // 上传表情包图片
 
-  'roles/list': 'rolesList',
-  'roles/rolesquery': 'rolesquery',
-  'roles/rolesadd': 'rolesadd',
-  'roles/rolesedit': 'rolesedit',
-  'roles/rolesdelete': 'rolesdelete',
+
+
+  // 角色管理相关接口
+  'roles/list': 'rolesList',  // 获取角色列表
+  'roles/query': 'rolesquery',  // 查询角色
+  'roles/add': 'rolesadd',  // 添加角色
+  'roles/edit': 'rolesedit',  // 编辑角色
+  'roles/delete': 'rolesdelete',  // 删除角色
+  
+
+  
+  // 声纹识别相关接口（重复定义）
+  'voiceprint/list': 'voiceprintlist',  // 获取声纹列表
+  'voiceprint/query': 'voiceprintquery',  // 查询声纹
+  'voiceprint/add': 'voiceprintadd',  // 添加声纹
+  'voiceprint/edit': 'voiceprintedit',  // 编辑声纹
+  'voiceprint/delete': 'voiceprintdelete',  // 删除声纹
 };
 
 export default api;
