@@ -15,7 +15,6 @@ const VoiceprintPage = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editform] = Form.useForm();
-  const [editingId, setEditingId] = useState(null);
   const [editing, setEditing] = useState(null);
 
   // 表格列定义
@@ -27,13 +26,13 @@ const VoiceprintPage = () => {
     },
     {
       title: '角色',
-      dataIndex: 'role',
-      key: 'role',
+      dataIndex: 'rolesname',
+      key: 'rolesname',
     },
     {
       title: '声纹向量',
-      dataIndex: 'vector',
-      key: 'vector',
+      dataIndex: 'voiceprintVector',
+      key: 'voiceprintVector',
       ellipsis: true,
     },
     {
@@ -51,20 +50,13 @@ const VoiceprintPage = () => {
           <Button
             type="primary"
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
+            onClick={() => handleEditShow(record)}
           >
             编辑
           </Button>
-          <Popconfirm
-            title="确定要删除这条声纹记录吗？"
-            onConfirm={() => handleDelete(record.key)}
-            okText="确定"
-            cancelText="取消"
-          >
-            <Button type="primary" danger icon={<DeleteOutlined />}>
-              删除
-            </Button>
-          </Popconfirm>
+          <Button type="primary" danger icon={<DeleteOutlined />} onClick={() => handleDeleteShow(record.key)}>
+            删除
+          </Button>
         </Space>
       ),
     },
@@ -107,7 +99,7 @@ const VoiceprintPage = () => {
     fetch();
   };
 
-  
+
   // 处理添加声纹
   const handleAddShow = () => {
     setEditing(1)
@@ -115,43 +107,106 @@ const VoiceprintPage = () => {
     setModalVisible(true);
   };
 
-  // 处理编辑声纹
-  const handleEdit = (record) => {
-    setEditingId(record.key);
-    editform.setFieldsValue(record);
-    setModalVisible(true);
-  };
-
-  // 处理删除声纹
-  const handleDelete = async (key) => {
+  // 新增
+  const handleAdd = async (params = {}) => {
+    setLoading(true);
     try {
-      const response = await service.delete('voiceprint/delete', { id: voiceprints[key].id });
+      const response = await service.getinfo('voiceprint/add', { ...params });
       if (response.success) {
-        setVoiceprints(voiceprints.filter(item => item.key !== key));
-        message.success('删除成功');
+        message.success('编辑成功');
+        setModalVisible(false);
       } else {
-        message.error('删除失败');
+        message.error('编辑失败');
       }
     } catch (error) {
-      console.error('删除声纹失败:', error);
-      message.error('删除失败');
+      message.error('编辑失败');
     }
+    setLoading(false);
   };
 
- // 处理表单提交
- const handleModalOk = async () => {
-  try {
-    const values = await editform.validateFields();
-    if (editing) {
-      await handleAdd(values);
-    } else {
-      await handleEdit(values);
+  // 处理编辑声纹
+  const handleEditShow = (record) => {
+    setEditing(0);
+    handleDetail(record.id)
+  };
+
+  // 编辑
+  const handleEdit = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('voiceprint/edit', { ...params });
+      if (response.success) {
+        message.success('编辑成功');
+        setModalVisible(false);
+      } else {
+        message.error('编辑失败');
+      }
+    } catch (error) {
+      message.error('编辑失败');
     }
-    setModalVisible(false);
-  } catch (error) {
-    console.error('表单验证失败:', error);
-  }
-};
+    setLoading(false);
+  };
+
+
+  // 根据id查询详情
+  const handleDetail = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('voiceprint/query', { ...params });
+      if (response.success && response.data) {
+        setModalVisible(true);
+        editform.setFieldsValue(response.data);
+      } else {
+        message.error('获取用户数据失败');
+      }
+    } catch (error) {
+      message.error('获取用户数据失败');
+    }
+    setLoading(false);
+  };
+
+  // 根据id删除
+  const handleDelete = async (params = {}) => {
+    setLoading(true);
+    try {
+      const response = await service.getinfo('voiceprint/delete', { ...params });
+      if (response.success) {
+        fetch();
+      } else {
+        message.error('操作失败');
+      }
+    } catch (error) {
+      message.error('操作失败');
+    }
+    setLoading(false);
+  };
+  // 处理删除声纹
+  const handleDeleteShow = (id) => {
+    Modal.confirm({
+      title: '确认删除',
+      content: '确定要删除此条数据吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        handleDelete(id);
+      },
+    });
+  };
+
+  // 处理表单提交
+  const handleModalOk = async () => {
+    try {
+      const values = await editform.validateFields();
+      if (editing) {
+        await handleAdd(values);
+      } else {
+        await handleEdit(values);
+      }
+      setModalVisible(false);
+    } catch (error) {
+      console.error('表单验证失败:', error);
+    }
+  };
 
   return (
     <div>
@@ -189,7 +244,7 @@ const VoiceprintPage = () => {
               select: {
                 defaultValue: 'ASR',
                 placeholder: "请选择角色名称",
-                options:[]
+                options: []
               }
             },
           ]}
@@ -207,11 +262,11 @@ const VoiceprintPage = () => {
       />
 
       <Modal
-        title={editingId === null ? '添加声纹' : '编辑声纹'}
+        title={editing ? '添加声纹' : '编辑声纹'}
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        okText={editingId === null ? '添加' : '保存'}
+        okText="确认"
         cancelText="取消"
         width={600}
       >
@@ -227,7 +282,7 @@ const VoiceprintPage = () => {
             <Input placeholder="请输入声纹名称" />
           </Form.Item>
           <Form.Item
-            name="role"
+            name="rolesid"
             label="角色"
             rules={[{ required: true, message: '请选择角色' }]}
           >
@@ -238,11 +293,11 @@ const VoiceprintPage = () => {
             </Select>
           </Form.Item>
           <Form.Item
-            name="vector"
+            name="voiceprintVector"
             label="声纹向量"
             rules={[{ required: true, message: '请输入声纹向量' }]}
           >
-            <Input placeholder="请输入声纹向量，多个数值用逗号分隔" />
+            <Input placeholder="请输入声纹向量" />
           </Form.Item>
           <Form.Item
             name="description"

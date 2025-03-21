@@ -89,28 +89,28 @@ const RolesPage = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
-            type="link"
+            type="primary"
             icon={<EditOutlined />}
             onClick={() => handleEditShow(record)}
           >
             编辑
           </Button>
           <Button
-            type="link"
+            color="purple" variant="solid"
             icon={<QrcodeOutlined />}
             onClick={() => handleVerification(record.id)}
           >
             验证码
           </Button>
           <Button
-            type="link"
+             color="pink" variant="solid"
             icon={<HistoryOutlined />}
             onClick={() => handleViewHistory(record.id)}
           >
             历史
           </Button>
           <Button
-            type="link"
+            type="primary"
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDeleteShow(record.id)}
@@ -172,7 +172,7 @@ const RolesPage = () => {
     try {
       const response = await service.getinfo('roles/add', { ...params });
       if (response.success) {
-        message.error('编辑成功');
+        message.success('编辑成功');
         setModalVisible(false);
       } else {
         message.error('编辑失败');
@@ -195,7 +195,7 @@ const RolesPage = () => {
     try {
       const response = await service.getinfo('roles/edit', { ...params });
       if (response.success) {
-        message.error('编辑成功');
+        message.success('编辑成功');
         setModalVisible(false);
       } else {
         message.error('编辑失败');
@@ -223,7 +223,7 @@ const RolesPage = () => {
     setLoading(false);
   };
 
-  // 根据id查询详情
+  // 根据id删除
   const handleDelete = async (params = {}) => {
     setLoading(true);
     try {
@@ -243,7 +243,7 @@ const RolesPage = () => {
   const handleDeleteShow = (id) => {
     Modal.confirm({
       title: '确认删除',
-      content: '确定要删除这个角色吗？',
+      content: '确定要删除此条数据吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => {

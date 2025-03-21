@@ -1,30 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  List,
-  Tag,
-  Typography,
-  Input,
-  DatePicker,
-  Select,
-  Space,
-  Button,
-  Avatar,
-  Drawer,
-  Divider,
-  Empty,
-  Pagination
-} from 'antd';
-import {
-  UserOutlined,
-  RobotOutlined,
-  SearchOutlined,
-  FilterOutlined,
-  EyeOutlined,
-  TeamOutlined,
-  CalendarOutlined,
-  MessageOutlined
-} from '@ant-design/icons';
+import { Card, List, Tag, Typography, Input, DatePicker, Select, Space, Button, Avatar, Drawer, Divider, Form, Pagination } from 'antd';
+import { C_Table, C_Form } from '@/components';
+import { UserOutlined, RobotOutlined, SearchOutlined, FilterOutlined, EyeOutlined, TeamOutlined, CalendarOutlined, MessageOutlined } from '@ant-design/icons';
 import '@/assets/global.css';
 import './chatHistory.css';
 
@@ -189,6 +166,14 @@ const mockChatData = [
 ];
 
 const ChatHistoryPage = () => {
+  const [loading, setLoading] = useState(false); // 加载状态
+  const [dataSource, setDataSource] = useState([]); // 表格数据源
+  const [modalVisible, setModalVisible] = useState(false); // 模态框显示状态
+  const [editing, setEditing] = useState(null);
+  const [searchForm] = Form.useForm(); // 搜索表单实例
+  const [editform] = Form.useForm(); // 编辑表单实例
+  const [verificationForm] = Form.useForm(); // 验证码表单实例
+
   const [searchText, setSearchText] = useState('');
   const [dateRange, setDateRange] = useState(null);
   const [selectedRole, setSelectedRole] = useState('');

@@ -23,20 +23,32 @@ const api = {
 
 
   // 角色管理相关接口
-  'roles/list': 'rolesList',  // 获取角色列表
+  'roles/list': 'roleslist',  // 获取角色列表
   'roles/query': 'rolesquery',  // 查询角色
   'roles/add': 'rolesadd',  // 添加角色
   'roles/edit': 'rolesedit',  // 编辑角色
   'roles/delete': 'rolesdelete',  // 删除角色
-  
 
-  
+
+
   // 声纹识别相关接口（重复定义）
   'voiceprint/list': 'voiceprintlist',  // 获取声纹列表
   'voiceprint/query': 'voiceprintquery',  // 查询声纹
   'voiceprint/add': 'voiceprintadd',  // 添加声纹
   'voiceprint/edit': 'voiceprintedit',  // 编辑声纹
   'voiceprint/delete': 'voiceprintdelete',  // 删除声纹
+
+
+
+
+  // 聊天历史管理相关接口
+  'chathistory/list': 'chathistorylist',  // 获取聊天历史列表
+  'chathistory/query': 'chathistoryquery',  // 查询聊天历史
+  'chathistory/add': 'chathistoryadd',  // 添加聊天历史
+  'chathistory/edit': 'chathistoryedit',  // 编辑聊天历史
+  'chathistory/delete': 'chathistorydelete',  // 删除聊天历史
+
+
 };
 
 export default api;
