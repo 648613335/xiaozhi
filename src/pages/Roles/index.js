@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button, Space, Input, Form, Select, Card, message, Modal, Drawer, List, Avatar, Tag, TextArea } from 'antd';
 import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined, PlusOutlined, QrcodeOutlined, HistoryOutlined, UserOutlined, RobotOutlined } from '@ant-design/icons';
-import { C_Table, C_Form } from '@/components';
+import { C_Table, C_Form, C_Page } from '@/components';
 import service from '@/utils/service';
 import comData from '@/utils/comData';
 
@@ -103,7 +103,7 @@ const RolesPage = () => {
             验证码
           </Button>
           <Button
-             color="pink" variant="solid"
+            color="pink" variant="solid"
             icon={<HistoryOutlined />}
             onClick={() => handleViewHistory(record.id)}
           >
@@ -293,14 +293,12 @@ const RolesPage = () => {
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>角色管理</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddShow}>
-          添加角色
-        </Button>
-      </div>
-
+    <C_Page
+      title="角色管理"
+      rightArea={<Button type="primary" icon={<PlusOutlined />} onClick={handleAddShow}>
+        添加角色
+      </Button>}
+    >
       <Card>
         <C_Form
           form={{
@@ -469,7 +467,7 @@ const RolesPage = () => {
           )}
         />
       </Drawer>
-    </div>
+    </C_Page>
   );
 };
 

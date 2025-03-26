@@ -1,5 +1,8 @@
-import { Form, Button, Input, Select, Space } from 'antd'
+import { Form, Button, Input, Select, Space, DatePicker } from 'antd'
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
+
+const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 
 const Index = (props) => {
 
@@ -26,6 +29,21 @@ const Index = (props) => {
                                             })
                                         }
                                     </Select>
+                                )
+                                break;
+                            case 'textArea':
+                                content = (
+                                    <TextArea
+                                        rows={4}
+                                        {...item.textArea}
+                                    />
+                                )
+                                break;
+                            case 'rangePicker':
+                                content = (
+                                    <RangePicker
+                                        {...item.rangePicker}
+                                    />
                                 )
                                 break;
                             default:

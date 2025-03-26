@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm, Select, Card } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import service from '@/utils/service';
-import { C_Table, C_Form } from '@/components';
+import { C_Table, C_Form, C_Page } from '@/components';
 
-const { Title } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -20,14 +19,14 @@ const VoiceprintPage = () => {
   // 表格列定义
   const columns = [
     {
-      title: '名称',
-      dataIndex: 'name',
-      key: 'name',
+      title: '客户名称',
+      dataIndex: 'userName',
+      key: 'userName',
     },
     {
       title: '角色',
-      dataIndex: 'rolesname',
-      key: 'rolesname',
+      dataIndex: 'rolesName',
+      key: 'rolesName',
     },
     {
       title: '声纹向量',
@@ -209,17 +208,10 @@ const VoiceprintPage = () => {
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>声纹识别</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAddShow}
-        >
-          添加声纹
-        </Button>
-      </div>
+    <C_Page
+      title="声纹识别"
+      rightArea={<Button type="primary" icon={<PlusOutlined />} onClick={handleAddShow} >添加声纹</Button>}
+    >
       <Card>
         <C_Form
           form={{
@@ -231,7 +223,7 @@ const VoiceprintPage = () => {
           formItems={[
             {
               label: "名称",
-              name: "name",
+              name: "userName",
               type: 'input',
               input: {
                 placeholder: "请输入名称"
@@ -239,7 +231,7 @@ const VoiceprintPage = () => {
             },
             {
               label: "角色名称",
-              name: "rolesid",
+              name: "rolesId",
               type: 'select',
               select: {
                 defaultValue: 'ASR',
@@ -270,48 +262,50 @@ const VoiceprintPage = () => {
         cancelText="取消"
         width={600}
       >
-        <Form
-          form={editform}
-          layout="vertical"
-        >
-          <Form.Item
-            name="name"
-            label="名称"
-            rules={[{ required: true, message: '请输入声纹名称' }]}
-          >
-            <Input placeholder="请输入声纹名称" />
-          </Form.Item>
-          <Form.Item
-            name="rolesid"
-            label="角色"
-            rules={[{ required: true, message: '请选择角色' }]}
-          >
-            <Select placeholder="请选择角色">
-              <Option value="管理员">管理员</Option>
-              <Option value="用户">用户</Option>
-              <Option value="访客">访客</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="voiceprintVector"
-            label="声纹向量"
-            rules={[{ required: true, message: '请输入声纹向量' }]}
-          >
-            <Input placeholder="请输入声纹向量" />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="描述"
-            rules={[{ required: true, message: '请输入描述信息' }]}
-          >
-            <TextArea
-              rows={4}
-              placeholder="请输入描述信息"
-            />
-          </Form.Item>
-        </Form>
+        <C_Form
+          form={{
+            form: editform,
+            layout: "vertical"
+          }}
+          formItems={[
+            {
+              label: "客户名称",
+              name: "userName",
+              type: 'input',
+              input: {
+                placeholder: "请输入声纹名称"
+              }
+            },
+            {
+              label: "角色名称",
+              name: "rolesId",
+              type: 'select',
+              select: {
+                defaultValue: 'ASR',
+                placeholder: "请选择角色名称",
+                options: []
+              }
+            },
+            {
+              label: "声纹向量",
+              name: "voiceprintVector",
+              type: 'input',
+              input: {
+                placeholder: "请输入声纹向量"
+              }
+            },
+            {
+              label: "描述",
+              name: "description",
+              type: 'input',
+              textArea: {
+                placeholder: "请输入描述信息"
+              }
+            },
+          ]}
+        />
       </Modal>
-    </div>
+    </C_Page>
   );
 };
 

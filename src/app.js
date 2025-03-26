@@ -1,6 +1,6 @@
 // 运行时配置
 import { history } from 'umi';
-import menus from './components/menu';
+import menus from './utils/menu';
 
 const menuRoutes = typeof menus === 'function' ? menus() : menus;
 

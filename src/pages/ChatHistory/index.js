@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, List, Tag, Typography, Input, DatePicker, Select, Space, Button, Avatar, Drawer, Divider, Form, Pagination } from 'antd';
-import { C_Table, C_Form } from '@/components';
+import { C_Table, C_Form, C_Page } from '@/components';
 import { UserOutlined, RobotOutlined, SearchOutlined, FilterOutlined, EyeOutlined, TeamOutlined, CalendarOutlined, MessageOutlined } from '@ant-design/icons';
 import '@/assets/global.css';
 import './chatHistory.css';
@@ -182,6 +182,36 @@ const ChatHistoryPage = () => {
   const [detailVisible, setDetailVisible] = useState(false);
   const [currentChat, setCurrentChat] = useState(null);
 
+
+  // 表格列定义
+  const columns = [
+    {
+      title: '客户名称',
+      dataIndex: 'userName',
+      key: 'userName',
+    },
+    {
+      title: '角色名称',
+      dataIndex: 'rolesName',
+      key: 'rolesName',
+    },
+    {
+      title: '消息数量',
+      dataIndex: 'count',
+      key: 'count',
+    },
+    {
+      title: '对话时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+    },
+    {
+      title: '对话内容',
+      dataIndex: 'content',
+      key: 'content',
+    },
+  ];
+
   // 处理查看对话详情
   const handleViewDetail = (record) => {
     setCurrentChat(record);
@@ -206,40 +236,58 @@ const ChatHistoryPage = () => {
   };
 
   return (
-    <div className="content-container chat-history-page">
-      <div className="chat-history-header">
-        <Title level={2}>聊天记录</Title>
-        <div className="filter-container">
-          <Space size="middle">
-            <Input
-              placeholder="搜索关键词"
-              value={searchText}
-              onChange={e => setSearchText(e.target.value)}
-              prefix={<SearchOutlined />}
-              style={{ width: 200 }}
-            />
-            <RangePicker
-              value={dateRange}
-              onChange={value => setDateRange(value)}
-              style={{ width: 300 }}
-            />
-            <Select
-              placeholder="选择角色"
-              value={selectedRole}
-              onChange={value => setSelectedRole(value)}
-              style={{ width: 150 }}
-            >
-              <Option value="">全部</Option>
-              <Option value="user">用户</Option>
-              <Option value="assistant">助手</Option>
-            </Select>
-            <Button type="primary" icon={<FilterOutlined />} onClick={handleSearch}>
-              筛选
-            </Button>
-            <Button onClick={handleReset}>重置</Button>
-          </Space>
-        </div>
-      </div>
+    <C_Page
+      title="聊天记录"
+    >
+      <Card>
+        <C_Form
+          form={{
+            form: searchForm,
+            layout: "inline",
+            handleSearch,
+            handleReset
+          }}
+          formItems={[
+            {
+              label: "关键字",
+              name: "content",
+              type: 'input',
+              input: {
+                placeholder: "请输入关键字"
+              }
+            },
+            {
+              label: "角色名称",
+              name: "rolesId",
+              type: 'select',
+              select: {
+                defaultValue: 'ASR',
+                placeholder: "请输入角色名称",
+                options: []
+              }
+            },
+            {
+              label: "时间",
+              name: "timbre",
+              type: 'rangePicker',
+              rangePicker: {
+                placeholder: "请输入时间"
+              }
+            },
+          ]}
+        />
+      </Card>
+
+      <C_Table
+        table={{ columns, dataSource, loading, rowKey: 'id' }}
+        pagination={{
+          pageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `共 ${total} 条记录`
+        }}
+      />
+
 
       <Card className="chat-history-content">
         <List
@@ -370,7 +418,7 @@ const ChatHistoryPage = () => {
           </div>
         )}
       </Drawer>
-    </div>
+    </C_Page>
   );
 };
 

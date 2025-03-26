@@ -3,7 +3,7 @@ import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm } fr
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import service from '@/utils/service';
 import '@/assets/global.css';
-import Table from '@/components/c_Table';
+import { C_Table, C_Page } from '@/components';
 
 const { Title } = Typography;
 
@@ -164,27 +164,24 @@ const UsersPage = () => {
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>用户管理</Title>
-        <Space>
-          <Button
-            icon={<ReloadOutlined />}
-            onClick={fetchUsers}
-          >
-            刷新数据
-          </Button>
-          <Button
-            type="primary"
-            icon={<PlusOutlined loading={!loading} />}
-            onClick={handleAdd}
-          >
-            添加用户
-          </Button>
-        </Space>
-      </div>
-
-      <Table
+    <C_Page title="用户管理"
+      rightArea={<Space>
+        <Button
+          icon={<ReloadOutlined />}
+          onClick={fetchUsers}
+        >
+          刷新数据
+        </Button>
+        <Button
+          type="primary"
+          icon={<PlusOutlined loading={!loading} />}
+          onClick={handleAdd}
+        >
+          添加用户
+        </Button>
+      </Space>}
+    >
+      <C_Table
         table={{
           columns, // 表格列配置
           dataSource: users, // 数据源
@@ -237,7 +234,7 @@ const UsersPage = () => {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </C_Page>
   );
 };
 

@@ -188,7 +188,7 @@ const StatisticsPage = () => {
             <Option value="all">所有角色</Option>
             <Option value="assistant1">智能助手小明</Option>
             <Option value="advisor1">专业顾问小华</Option>
-            <Option value="customerService">客服机器人</Option>
+            <Option value="userService">客服机器人</Option>
             <Option value="programmingCoach">编程教练</Option>
           </Select>
         </Space>
