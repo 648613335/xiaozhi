@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography } from 'antd';
-import '@/assets/global.css';
 
 const { Title } = Typography;
 

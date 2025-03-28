@@ -19,7 +19,6 @@ const menus = () => {
     return [
         {
             path: '/login',
-            component: './Login',
             layout: false,
         },
         {
@@ -29,19 +28,16 @@ const menus = () => {
         {
             path: '/home',
             name: '首页',
-            component: './Home',
             icon: <HomeOutlined />,
         },
         {
             path: '/users',
             name: '用户管理',
-            component: './Users',
             icon: <UserOutlined />,
         },
         {
             path: '/roles',
             name: '角色管理',
-            component: './Roles',
             icon: <TeamOutlined />,
         },
         {
@@ -57,31 +53,26 @@ const menus = () => {
         {
             path: '/statistics',
             name: '统计分析',
-            component: './Statistics',
             icon: <BarChartOutlined />,
         },
         {
-            path: '/chat-history',
+            path: '/chathistory',
             name: '聊天记录',
-            component: './ChatHistory',
             icon: <MessageOutlined />,
         },
         {
-            path: '/knowledge-base',
+            path: '/knowledgebase',
             name: '知识库',
-            component: './KnowledgeBase',
             icon: <BookOutlined />,
         },
         {
             path: '/feedback',
             name: '反馈管理',
-            component: './Feedback',
             icon: <ShareAltOutlined />,
         },
         {
             path: '/modelMonitor',
             name: '模型监控',
-            component: './ModelMonitor',
             icon: <RocketOutlined />,
         },
         {
@@ -93,7 +84,12 @@ const menus = () => {
             name: '权限管理',
             path: '/permissions',
             icon: <SafetyCertificateOutlined />,
-        }
+        },
+        {
+            path: '/profile',
+            name: '个人资料',
+            icon: <SafetyCertificateOutlined />,
+        },
     ]
 }
 export default menus

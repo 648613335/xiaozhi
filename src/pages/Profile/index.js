@@ -82,165 +82,163 @@ const ProfilePage = () => {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card>
-        <Tabs defaultActiveKey="basic">
-          <TabPane tab="基本信息" key="basic">
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-              <Avatar
-                size={100}
-                src={userProfile?.avatar}
-                icon={<UserOutlined />}
-                style={{ marginBottom: '16px' }}
+    <Card>
+      <Tabs defaultActiveKey="basic">
+        <TabPane tab="基本信息" key="basic">
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+            <Avatar
+              size={100}
+              src={userProfile?.avatar}
+              icon={<UserOutlined />}
+              style={{ marginBottom: '16px' }}
+            />
+            <Upload
+              showUploadList={false}
+              beforeUpload={(file) => {
+                // 处理头像上传逻辑
+                const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+                if (!isJpgOrPng) {
+                  message.error('只能上传JPG/PNG格式的图片!');
+                }
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isLt2M) {
+                  message.error('图片必须小于2MB!');
+                }
+                return false;
+              }}
+            >
+              <Button icon={<UploadOutlined />}>更换头像</Button>
+            </Upload>
+          </div>
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleUpdateProfile}
+            style={{ maxWidth: '500px', margin: '0 auto' }}
+          >
+            <Form.Item
+              name="name"
+              label="用户名"
+              rules={[{ required: true, message: '请输入用户名' }]}
+            >
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="请输入用户名"
               />
-              <Upload
-                showUploadList={false}
-                beforeUpload={(file) => {
-                  // 处理头像上传逻辑
-                  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-                  if (!isJpgOrPng) {
-                    message.error('只能上传JPG/PNG格式的图片!');
-                  }
-                  const isLt2M = file.size / 1024 / 1024 < 2;
-                  if (!isLt2M) {
-                    message.error('图片必须小于2MB!');
-                  }
-                  return false;
-                }}
-              >
-                <Button icon={<UploadOutlined />}>更换头像</Button>
-              </Upload>
-            </div>
+            </Form.Item>
 
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleUpdateProfile}
-              style={{ maxWidth: '500px', margin: '0 auto' }}
+            <Form.Item
+              name="phone"
+              label="手机号"
+              rules={[
+                { required: true, message: '请输入手机号' },
+                { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式' }
+              ]}
             >
-              <Form.Item
-                name="name"
-                label="用户名"
-                rules={[{ required: true, message: '请输入用户名' }]}
-              >
-                <Input
-                  prefix={<UserOutlined />}
-                  placeholder="请输入用户名"
-                />
-              </Form.Item>
+              <Input
+                prefix={<PhoneOutlined />}
+                placeholder="请输入手机号"
+              />
+            </Form.Item>
 
-              <Form.Item
-                name="phone"
-                label="手机号"
-                rules={[
-                  { required: true, message: '请输入手机号' },
-                  { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式' }
-                ]}
-              >
-                <Input
-                  prefix={<PhoneOutlined />}
-                  placeholder="请输入手机号"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="email"
-                label="邮箱"
-                rules={[
-                  { required: true, message: '请输入邮箱' },
-                  { type: 'email', message: '请输入正确的邮箱格式' }
-                ]}
-              >
-                <Input
-                  prefix={<MailOutlined />}
-                  placeholder="请输入邮箱"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="gender"
-                label="性别"
-                rules={[{ required: true, message: '请选择性别' }]}
-              >
-                <Select placeholder="请选择性别">
-                  <Option value="男">男</Option>
-                  <Option value="女">女</Option>
-                  <Option value="保密">保密</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading} block>
-                  保存修改
-                </Button>
-              </Form.Item>
-            </Form>
-          </TabPane>
-
-          <TabPane tab="修改密码" key="password">
-            <Form
-              form={passwordForm}
-              layout="vertical"
-              onFinish={handleUpdatePassword}
-              style={{ maxWidth: '500px', margin: '0 auto' }}
+            <Form.Item
+              name="email"
+              label="邮箱"
+              rules={[
+                { required: true, message: '请输入邮箱' },
+                { type: 'email', message: '请输入正确的邮箱格式' }
+              ]}
             >
-              <Form.Item
-                name="oldPassword"
-                label="原密码"
-                rules={[{ required: true, message: '请输入原密码' }]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="请输入原密码"
-                />
-              </Form.Item>
+              <Input
+                prefix={<MailOutlined />}
+                placeholder="请输入邮箱"
+              />
+            </Form.Item>
 
-              <Form.Item
-                name="newPassword"
-                label="新密码"
-                rules={[
-                  { required: true, message: '请输入新密码' },
-                  { min: 6, message: '密码长度不能小于6位' }
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="请输入新密码"
-                />
-              </Form.Item>
+            <Form.Item
+              name="gender"
+              label="性别"
+              rules={[{ required: true, message: '请选择性别' }]}
+            >
+              <Select placeholder="请选择性别">
+                <Option value="男">男</Option>
+                <Option value="女">女</Option>
+                <Option value="保密">保密</Option>
+              </Select>
+            </Form.Item>
 
-              <Form.Item
-                name="confirmPassword"
-                label="确认新密码"
-                dependencies={['newPassword']}
-                rules={[
-                  { required: true, message: '请确认新密码' },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue('newPassword') === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(new Error('两次输入的密码不一致'));
-                    },
-                  }),
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="请确认新密码"
-                />
-              </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading} block>
+                保存修改
+              </Button>
+            </Form.Item>
+          </Form>
+        </TabPane>
 
-              <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading} block>
-                  修改密码
-                </Button>
-              </Form.Item>
-            </Form>
-          </TabPane>
-        </Tabs>
-      </Card>
-    </div>
+        <TabPane tab="修改密码" key="password">
+          <Form
+            form={passwordForm}
+            layout="vertical"
+            onFinish={handleUpdatePassword}
+            style={{ maxWidth: '500px', margin: '0 auto' }}
+          >
+            <Form.Item
+              name="oldPassword"
+              label="原密码"
+              rules={[{ required: true, message: '请输入原密码' }]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="请输入原密码"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="newPassword"
+              label="新密码"
+              rules={[
+                { required: true, message: '请输入新密码' },
+                { min: 6, message: '密码长度不能小于6位' }
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="请输入新密码"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="confirmPassword"
+              label="确认新密码"
+              dependencies={['newPassword']}
+              rules={[
+                { required: true, message: '请确认新密码' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('newPassword') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('两次输入的密码不一致'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="请确认新密码"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading} block>
+                修改密码
+              </Button>
+            </Form.Item>
+          </Form>
+        </TabPane>
+      </Tabs>
+    </Card>
   );
 };
 

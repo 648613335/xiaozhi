@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button, Space, Modal, Form, Input, message, Popconfirm, Upload, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, UploadOutlined } from '@ant-design/icons';
 import service from '@/utils/service';
-import '@/assets/global.css';
 import Table from '@/components/c_Table';
 
 const { Title } = Typography;

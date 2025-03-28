@@ -78,7 +78,7 @@ export const login = async (username, password) => {
                     phone: '13800138000',
                     email: 'test@example.com',
                     gender: '男',
-                    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+                    avatar: 'iconfont icon-gerenzhongxin-zhihui'
                 };
                 localStorage.setItem('token', 'mock-token-123456');
                 localStorage.setItem('currentUser', JSON.stringify(mockUser));

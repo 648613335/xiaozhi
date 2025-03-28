@@ -23,7 +23,6 @@ import {
   FieldTimeOutlined,
   StarOutlined
 } from '@ant-design/icons';
-import '@/assets/global.css';
 import './statistics.css';
 
 const { Title, Paragraph } = Typography;

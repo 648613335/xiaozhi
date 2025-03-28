@@ -25,7 +25,6 @@ import {
   BookOutlined,
   TagsOutlined
 } from '@ant-design/icons';
-import '@/assets/global.css';
 import './knowledgeBase.css';
 
 const { Title, Text, Paragraph } = Typography;

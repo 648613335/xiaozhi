@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Dropdown, Avatar, Space } from 'antd';
-import { Link, Outlet, useLocation, history,useNavigate } from 'umi';
-import {
+import { Layout, Menu, Dropdown, Avatar, Space } from 'antd';
+import { Link, Outlet, useLocation, history, useNavigate } from 'umi';
+import Icon, {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
   DownOutlined,
   LogoutOutlined,
-  SettingOutlined, 
+  SettingOutlined,
 } from '@ant-design/icons';
 import './index.less';
-import '@/assets/global.css';
+import '@/assets/global.less';
+import '@/assets/iconfont.css';
 import { isUserLoggedIn, getCurrentUser, logout } from '@/utils/common';
 import menus from "@/utils/menu";
+
 
 const { Header, Sider, Content } = Layout;
 
@@ -81,14 +83,15 @@ const BasicLayout = () => {
   const handleUserMenuClick = ({ key }) => {
     switch (key) {
       case 'profile':
-        navigate('/profile');
+        history.push('/profile')
         break;
       case 'settings':
         navigate('/settings');
         break;
       case 'logout':
         // 处理登出逻辑
-        navigate('/login');
+        // navigate('/login');
+        logout();
         break;
       default:
         break;
@@ -140,7 +143,8 @@ const BasicLayout = () => {
                   onClick: handleUserMenuClick
                 }} trigger={['hover']}>
                   <Space style={{ cursor: 'pointer' }}>
-                    <Avatar src={currentUser.avatar} />
+                    <Avatar className={'iconfont icon-gerenzhongxin-zhihui'} />
+
                     <span>{currentUser.name}</span>
                     <DownOutlined style={{ fontSize: 12 }} />
                   </Space>

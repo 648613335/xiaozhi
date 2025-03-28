@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, List, Tag, Typography, Input, DatePicker, Select, Space, Button, Avatar, Drawer, Divider, Form, Pagination } from 'antd';
 import { C_Table, C_Form, C_Page } from '@/components';
 import { UserOutlined, RobotOutlined, SearchOutlined, FilterOutlined, EyeOutlined, TeamOutlined, CalendarOutlined, MessageOutlined } from '@ant-design/icons';
-import '@/assets/global.css';
 import './chatHistory.css';
 
 const { Title, Text, Paragraph } = Typography;
